@@ -53,9 +53,11 @@ class Application(tk.Tk):
         left_frame.pack  ( side = "left"  , expand=0, fill= "both", pady=50, padx=50, ipadx=100 ) 
         centralFrame.pack( side = "left"  , expand=1, fill= "both", pady=50, ipadx=35 ) 
 
+        # definit le chemin jusqu au program
+        dirname = os.path.dirname(os.path.abspath(__file__))
 
-        self.image1 = tk.PhotoImage(file = r'C:\Users\Arnaud_2018\Desktop\8Bits-Fibers\2021.01.03\logo\rectangle.png')
-        self.image2 = tk.PhotoImage(file = r'C:\Users\Arnaud_2018\Desktop\8Bits-Fibers\2021.01.03\logo\info.png')
+        self.image1 = tk.PhotoImage(file = os.path.join(dirname, str('logo\rectangle.png'   ) ))
+        self.image2 = tk.PhotoImage(file = os.path.join(dirname, str('logo\info.png'        ) ))
 
         canvas = tk.Canvas( topp_Frame , width = 200, height = 5, bg = LeaveColor, bd=0, highlightthickness=0 , relief=tk.SUNKEN)
         canvas.pack( side = "left", expand=1, fill= "both" )
