@@ -56,8 +56,8 @@ class Application(tk.Tk):
         # definit le chemin jusqu au program
         dirname = os.path.dirname(os.path.abspath(__file__))
 
-        self.image1 = tk.PhotoImage(file = os.path.join(dirname, str('logo\rectangle.png'   ) ))
-        self.image2 = tk.PhotoImage(file = os.path.join(dirname, str('logo\info.png'        ) ))
+        self.image1 = tk.PhotoImage(file = os.path.join(dirname, str('logo/rectangle.png'   ) ))
+        self.image2 = tk.PhotoImage(file = os.path.join(dirname, str('logo/info.png'        ) ))
 
         canvas = tk.Canvas( topp_Frame , width = 200, height = 5, bg = LeaveColor, bd=0, highlightthickness=0 , relief=tk.SUNKEN)
         canvas.pack( side = "left", expand=1, fill= "both" )
