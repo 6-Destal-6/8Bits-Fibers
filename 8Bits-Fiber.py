@@ -19,13 +19,12 @@ fontApp     = "Lucida Grande"
 class Application(tk.Tk):
 
     def __init__(self, *args, **kwargs):
-        tk.Tk.__init__(self, *args, **kwargs)
+        tk.Tk.__init__(self, *args, **kwargs) 
 
         container = tk.Frame(self, background=bgColor )
         container.pack(side=tk.TOP, fill=tk.BOTH, expand=True)     
 
-
-        # Recuperation de la taille ecran
+           
         scWidth    = container.winfo_screenwidth()    # Largeur
         scHeight   = container.winfo_screenheight()   # Hauteur
         screenSize = ("{}x{}".format( int(scWidth*0.5) , int(scHeight*0.8)))
@@ -60,9 +59,7 @@ class Application(tk.Tk):
         self.image2 = tk.PhotoImage(file = os.path.join(dirname, str('logo/info.png'        ) ))
 
         canvas = tk.Canvas( topp_Frame , width = 200, height = 5, bg = LeaveColor, bd=0, highlightthickness=0 , relief=tk.SUNKEN)
-        canvas.pack( side = "left", expand=1, fill= "both" )
-        
-                
+        canvas.pack( side = "left", expand=1, fill= "both" )    
 
         def move(texte):
 
