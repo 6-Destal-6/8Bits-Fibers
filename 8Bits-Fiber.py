@@ -99,31 +99,8 @@ class Application(tk.Tk):
                         time.sleep(0.01)
         
         
-        from Windows_Orange import OngletOrange
-        OngletOrange(centralFrame, left_frame, scHeight, scWidth, fontApp, LeaveColor, OnColor, bgColor, move ).OrangeFrame()
-
-        def Picture (path) :
-
-            # Definit la taille du logo par rapport a l'ecran
-            Size = int(scHeight*0.05)
-
-            # definit le chemin jusqu au program
-            dirname = os.path.dirname(os.path.abspath(__file__))
-
-            # Definit le Chemin du PNG
-            pictureFile     = os.path.join(dirname, path) 
-
-            # Ouvre le PNG
-            self.original   = Image.open(pictureFile)
-
-            # le redimensionne       
-            resized         = self.original.resize((Size, Size))
-
-            # import l'image redimensionner 
-            self.image      = ImageTk.PhotoImage(resized) 
-
-            # Retourne l'image
-            return self.image
+        from Windows_Orange import OngletOrang
+        OngletOrang(centralFrame, left_frame, scHeight, scWidth, fontApp, LeaveColor, OnColor, bgColor, move ).OrangFrame()
 
         # Fonction Reset --------------------------------------------------------------
         def refresh():

@@ -24,7 +24,7 @@ import win32com.client as win32
 
 from functools import partial
 
-class OngletOrange :    
+class OngletOrang :    
 
     def __init__(self, centralFrame, left_frame, screenHeight, screenWidth, fontApp, LeaveColor, OnColor, bgColor, move ):
 
@@ -38,12 +38,12 @@ class OngletOrange :
         self.bgColor      = bgColor
         self.move         = move
 
-    def OrangeFrame(self):
+    def OrangFrame(self):
 
         colorRed    = "salmon"
         colorGreen  = "SeaGreen3"
         colorBlue   = "cornflower blue"
-        colorOrange = "tan1"
+        colorOrang = "tan1"
 
         global incAerien
         incAerien = 0
@@ -56,7 +56,7 @@ class OngletOrange :
             if Bouton["state"] == NORMAL:
                 Bouton["state"] = DISABLED
 
-        def RecupExcelPatch(directory, File, OFile , sheetRange): 
+        def RecupExcelPatch(directory, File, OFile ): 
 
             if "C3B" in File or "C6" in File  :
                 c3bFile  = (directory+"/"+File)
@@ -149,21 +149,11 @@ class OngletOrange :
                             LABELBORDEREAU( canvas,"maroon2" , Name)
 
                         else:
-                            LABELBORDEREAU( canvas, colorOrange , Name) 
-
-                # Active les Boutons -----------------------  
-                Actived( ButtC3B   )
-                LabelBoutonValide(FrameC3B , 0.25 )
-
-                listButton = [ShapeCableButton, ShapeSupportButton ,ShapeBpeButton ]
-                for increment in range(1 ,len(listButton)+1):
-                    LabelBoutonValide(FrameShape , increment/4 )
-                    Actived( listButton[increment-1] )
-                # Active les Boutons -----------------------  
+                            LABELBORDEREAU( canvas, colorOrang , Name) 
                 
                 self.move(u"Un dossier vient d'être Monté")  
 
-        def FunCheckC3B():
+        def CheckC3bXlsx():
 
             AlveolAccept = []
 
@@ -186,9 +176,9 @@ class OngletOrange :
 
                         # Monte le fichier Fxxxxxxxxxxx_C3B.xlsx
                         try :     
-                            sh = RecupExcelPatch( directory , File, "C3A", 1 )
+                            sh = RecupExcelPatch( directory , File, "C3A" )
                         except:
-                            sh = RecupExcelPatch( directory , File, "C3B", 3 )
+                            sh = RecupExcelPatch( directory , File, "C3B" )
 
                         # Boucle sur toutes les lignes du fichier pour récupérer les informations                        
                         depart = 11    # Debute appartir de la ligne 11 
@@ -281,7 +271,7 @@ class OngletOrange :
                                     LABELRESULTAT( 9, colorGreen , "normal",  Value )
 
                                 elif TypeB == "A" :
-                                    LABELRESULTAT( 9, colorOrange , "normal", "\n" + Value + u"\n  Toléré, cependant : Type A = A  et  Type B = AT serait plus juste ► inverser les 2 supports si C3A impossible en C3B\n")
+                                    LABELRESULTAT( 9, colorOrang , "normal", "\n" + Value + u"\n  Toléré, cependant : Type A = A  et  Type B = AT serait plus juste ► inverser les 2 supports si C3A impossible en C3B\n")
 
                                 else :
                                     LABELRESULTAT( 9, colorRed , "normal", Value )
@@ -329,7 +319,7 @@ class OngletOrange :
                     for File in sorted(filenames ) :
                         
                         if "C6" in File :  
-                            sh = RecupExcelPatch( directory , File, "C6", 3 )
+                            sh = RecupExcelPatch( directory , File, "C6" )
 
                             # Boucle sur toutes les lignes du fichier pour récupérer les informations                        
                             depart = 8
@@ -396,7 +386,7 @@ class OngletOrange :
                             LABELBORDEREAU( scrollable_frame , "black" , File )
 
                             # print (File )   
-                            sh = RecupExcelPatch( directory , File, "C7", 1 )
+                            sh = RecupExcelPatch( directory , File, "C7" )
 
                             # Boucle sur toutes les lignes du fichier pour récupérer les informations                        
                             depart = 17
@@ -436,8 +426,8 @@ class OngletOrange :
             addC3BChambreList   = []
             NewElementFOA       = []
 
-            Actived(ButNameC16)            
-            LabelBoutonValide(FrameChambre , 0.55 )
+            Actived(ButtonRenameC16)            
+            #LabelBoutonValide(FrameChambre , 0.55 )
 
             for element in  C3Blist:
                 addNexList.append( element.split(" ")[2] ) # Renvoie > 88516/152
@@ -482,8 +472,8 @@ class OngletOrange :
 
                                 else:
                                     LABELRESULTAT( 9, "#ff5050", "bold", File + str("\t◄ Nécessaire : Manque _C16 à la fin") )
-                                    LabelBoutonValide(FrameChambre , 0.55 ) 
-                                    Actived(ButNameC16) 
+                                    #LabelBoutonValide(FrameChambre , 0.55 ) 
+                                    Actived(ButtonRenameC16) 
 
                             else :
                                 mylistFOA.append( File[:len(File)-9] ) 
@@ -496,8 +486,8 @@ class OngletOrange :
 
                                 else:
                                     LABELRESULTAT( 9, "#ff5050", "bold", File + str("\t◄ Manque _C16 à la fin") )
-                                    LabelBoutonValide(FrameChambre , 0.55 ) 
-                                    Actived(ButNameC16) 
+                                    #LabelBoutonValide(FrameChambre , 0.55 ) 
+                                    Actived(ButtonRenameC16) 
 
             for element in ChambreC3Blist :
                 NewElement = element.split(" ")[2]
@@ -535,7 +525,7 @@ class OngletOrange :
 
 
         # Fonction qui analyse et compare le shape BPE par rapport à la C3B -------------------------------------------------------------
-        def CheBPE() :  
+        def CheckBpeShp() :  
 
             # Initialisation des Listes
             C3Blist          = []            
@@ -582,7 +572,7 @@ class OngletOrange :
                         Fxxxxxxxxxxx_C3Bxlsx = File
 
                         # Monte le fichier Fxxxxxxxxxxx_C3B.xlsx      
-                        sh = RecupExcelPatch( directory , File, "C3B" , 3 )
+                        sh = RecupExcelPatch( directory , File, "C3B" )
 
                         # Boucle sur toutes les lignes du fichier pour récupérer les informations                        
                         depart = 11    # Debute appartir de la ligne 11 
@@ -626,13 +616,13 @@ class OngletOrange :
             for Element in sorted(C3Blist) :
                 if Element != "" :                    
                     firstSepared  = Element.split(' ')[0]
-                    FourSepared   = Element.split(' ')[3]
-                    # print (  "Element : " + firstSepared + "Element : " + FourSepared      ) 
+                    SecondSepared   = Element.split(' ')[3]
+                    # print (  "Element : " + firstSepared + "Element : " + SecondSepared      ) 
 
                     if len(firstSepared) < 9 :
-                        LABELRESULTAT( 10, colorGreen, "bold", "Present dans la C3B : \t\t" + firstSepared + "\t\t" + FourSepared  ) 
+                        LABELRESULTAT( 10, colorGreen, "bold", "Present dans la C3B : \t\t" + firstSepared + "\t\t" + SecondSepared  ) 
                     else:
-                        LABELRESULTAT( 10, colorGreen, "bold", "Present dans la C3B : \t\t" + firstSepared + "\t" + FourSepared ) 
+                        LABELRESULTAT( 10, colorGreen, "bold", "Present dans la C3B : \t\t" + firstSepared + "\t" + SecondSepared ) 
 
             for Element in sorted(supportC3Blist) :            
                 if Element not in C3Blist :
@@ -671,7 +661,7 @@ class OngletOrange :
                 if Element not in NewSupportC3Blist and  Element != '' :
 
                     #print ("element trouvée : " + firstSepared)
-                    LABELRESULTAT( 10, colorOrange, "bold", "En trop dans bpe.shape : \t\t" + Element )
+                    LABELRESULTAT( 10, colorOrang, "bold", "En trop dans bpe.shape : \t\t" + Element )
 
             JusteOuFaux(faute) 
 
@@ -680,15 +670,15 @@ class OngletOrange :
         
 
         # Fonction qui analyse et compare le shape support par rapport à la C3B ---------------------------------------------------------
-        def CheckSupport() :
+        def CheckSupportShp() :
             global C3Blist     
             global ChambreC3Blist
             global incAerien     
 
             # Active le Bouton Relevé de Chambre
-            Actived(ButtReleve)
-            LabelBoutonValide(FrameChambre , 0.25 )
-            LabelBoutonValide(FrameChambre , 0.50 )           
+            Actived(ButtonReleveDeChambre)
+            #LabelBoutonValide(FrameChambre , 0.25 )
+            #LabelBoutonValide(FrameChambre , 0.50 )           
 
             def TypeSupport( ColonneType , ColonneSupport ):
 
@@ -746,9 +736,9 @@ class OngletOrange :
 
                             # Monte le fichier Fxxxxxxxxxxx_C3B.xlsx
                             try :     
-                                sh = RecupExcelPatch( directory , File, "C3A", 1 )
+                                sh = RecupExcelPatch( directory , File, "C3A" )
                             except:
-                                sh = RecupExcelPatch( directory , File, "C3B", 3 )                                 
+                                sh = RecupExcelPatch( directory , File, "C3B" )                                 
 
                             for rx in range(11,sh.nrows):
                                 TypeSupport( 2 , 3 )
@@ -798,8 +788,8 @@ class OngletOrange :
                         if "Chambre" in element :
                             LABELRESULTAT( 10, colorGreen, "bold", element )
                         else:
-                            Actived( ButtAppui  )
-                            LabelBoutonValide(FrameChambre , 0.75)
+                            Actived( ButtonAppuiAerien  )
+                            #LabelBoutonValide(FrameChambre , 0.75)
                             LABELRESULTAT( 10, colorBlue , "bold", element )
 
                 if len(supportListShape) == 0 :
@@ -827,10 +817,10 @@ class OngletOrange :
                         if element not in supportListC3B :
                             faute += 1
                             if element == "" :
-                                LABELRESULTAT( 10, colorOrange, "bold", u"Support : <vide> à supprimer du Shape" )
+                                LABELRESULTAT( 10, colorOrang, "bold", u"Support : <vide> à supprimer du Shape" )
 
                             else :
-                                LABELRESULTAT( 10, colorOrange, "bold", u"Support : " + element + " à supprimer du Shape" )  
+                                LABELRESULTAT( 10, colorOrang, "bold", u"Support : " + element + " à supprimer du Shape" )  
                 # ------------------------------------------------------------------------------------------------------------------------------------
                 # ------------------------------------------------------------------------------------------------------------------------------------
                 InseeListC3B= list(dict.fromkeys(InseeListC3B)) # retire les doublons 
@@ -863,7 +853,7 @@ class OngletOrange :
         # Fonction qui analyse et compare le shape support par rapport à la C3B ---------------------------------------------------------
 
         # Fonction qui analyse et compare le shape cable par rapport à la C3B -----------------------------------------------------------
-        def CheckCable(): 
+        def CheckCableShp(): 
 
             def ElementSeparee(Element):
 
@@ -943,7 +933,7 @@ class OngletOrange :
                                 Fxxxxxxxxxxx_C3Bxlsx = File
 
                                 # Monte le fichier Fxxxxxxxxxxx_C3B.xlsx
-                                sh = RecupExcelPatch( directory , File , "C3B", 3)  
+                                sh = RecupExcelPatch( directory , File , "C3B")  
 
                                 # Boucle sur toutes les lignes du fichier pour récupérer les informations                        
                                 depart = 11    # Debute appartir de la ligne 11                    
@@ -953,13 +943,10 @@ class OngletOrange :
                                     CABLE   = str( sh.cell(rowx=rx, colx=15).value)
 
                                     # Continue le Programme Uniquement si le Câble est Posé
-                                    if CABLE != u"Câble non posé" :
-
-                                        # Nombre de Câble
-                                        nombreDeCable += 1  
+                                    if CABLE != u"Câble non posé" :                                        
 
                                         SUP1ORT = ReconnaissanceSupport(3)
-                                        SUP2ORT = ReconnaissanceSupport(5)
+                                        SUP2ORT = ReconnaissanceSupport(5)                                        
 
                                         # S'arrete sur la Colonne K : Diamètre du Câble à Poser
                                         DIAM    = str( sh.cell(rowx=rx, colx=10).value)
@@ -967,14 +954,14 @@ class OngletOrange :
                                         # Réunie Chaques Valeurs
                                         Value = SUP1ORT +"-"+ SUP2ORT +"-"+ DIAM
                                         C3Blist.append( Value )  
+
+                                        # Nombre de Câble                                        
+                                        nombreDeCable += 1  
                         
                             # S'arrete sur le shape cable.dbf
                             elif "cable.dbf" in File :
-
-                                inc += 1
-
-                                # Créer le Chemin vers le Shape
-                                dbfFile  = (directory+"/"+File) 
+                                inc += 1                                
+                                dbfFile  = (directory+"/"+File) # Créer le Chemin vers le Shape
 
                                 # Boucle sur chaque ligne du fichier
                                 for record in DBF(dbfFile):
@@ -1029,15 +1016,15 @@ class OngletOrange :
                     firstSepared, SecondSepared, ThirtSepared = ElementSeparee(Element)
                     if len( firstSepared ) < 9 :                        
                         if len( SecondSepared ) < 9 and SecondSepared != "Immeuble" :
-                            LABELRESULTAT( 10, colorOrange, "bold", u"Câble à supprimer du Shape : \t" + str(firstSepared) + "\t\t" + str(SecondSepared) + "\t\t" +  str(ThirtSepared) )
+                            LABELRESULTAT( 10, colorOrang, "bold", u"Câble à supprimer du Shape : \t" + str(firstSepared) + "\t\t" + str(SecondSepared) + "\t\t" +  str(ThirtSepared) )
                         else :
-                            LABELRESULTAT( 10, colorOrange, "bold", u"Câble à supprimer du Shape : \t" + str(firstSepared) + "\t\t" + str(SecondSepared) + "\t" +  str(ThirtSepared) )
+                            LABELRESULTAT( 10, colorOrang, "bold", u"Câble à supprimer du Shape : \t" + str(firstSepared) + "\t\t" + str(SecondSepared) + "\t" +  str(ThirtSepared) )
 
                     else :
                         if len( SecondSepared ) < 9 and SecondSepared != "Immeuble" :
-                            LABELRESULTAT( 10, colorOrange, "bold", u"Câble à supprimer du Shape : \t" + str(firstSepared) + "\t" + str(SecondSepared) + "\t\t" +  str(ThirtSepared) )
+                            LABELRESULTAT( 10, colorOrang, "bold", u"Câble à supprimer du Shape : \t" + str(firstSepared) + "\t" + str(SecondSepared) + "\t\t" +  str(ThirtSepared) )
                         else :
-                            LABELRESULTAT( 10, colorOrange, "bold", u"Câble à supprimer du Shape : \t" + str(firstSepared) + "\t" + str(SecondSepared) + "\t" +  str(ThirtSepared) )
+                            LABELRESULTAT( 10, colorOrang, "bold", u"Câble à supprimer du Shape : \t" + str(firstSepared) + "\t" + str(SecondSepared) + "\t" +  str(ThirtSepared) )
                 
                 else :  
                     firstSepared, SecondSepared, ThirtSepared = ElementSeparee(Element)
@@ -1082,7 +1069,7 @@ class OngletOrange :
 
 
         # Renomme les fichiers 88516/1431.xlsx en 88516/1431_C16.xlsx -----------------------------------------------------------------------------  
-        def Rename():
+        def CheckRenameC16():
 
             def DectectionFinFile(interger):
 
@@ -1135,67 +1122,31 @@ class OngletOrange :
             # comptabilise le nombre de fichiers renommés
             if RenameCount == 0 :
                 LABELRESULTAT( 10, "white", "normal", "Tous les Fichiers de Relevé de chambre sont bien nommés") 
-                Disabled( ButNameC16 )
+                Disabled( ButtonRenameC16 )
             else :
                 LABELRESULTAT( 10, "white", "normal", str(RenameCount) + " Fichiers ont été Renommés") 
 
             self.move(u"Renommage des fichiers Relevés FOA") 
         
-        # Renomme les fichiers 88516/1431.xlsx en 88516/1431_C16.xlsx ----------------------------------------------------------------------------- 
-
-
         # Creation des Boutons --------------------------------------------------------------------------------------------------------------------              
         def Picture (Path) :            
             Size     = int(self.screenHeight*0.05)          # Definit la taille du logo par rapport a l'ecran            
-            dirname  = path.dirname(path.abspath(__file__)) # definit le chemin jusqu au program            
-            picture  = path.join(dirname, Path)             # Definit le Chemin du PNG
+            dirname  = path.dirname(path.abspath(__file__)) # definit le chemin jusqu au program                 
+            picture  = path.join(dirname, Path)             # Definit le Chemin du PNG 
             original = Image.open(picture)                  # Ouvre le PNG               
             resized  = original.resize((Size, Size))        # le redimensionne    
             self.img = ImageTk.PhotoImage(resized)          # import l'image redimensionner             
-            return self.img                                 # Retourne l'image    
-        
-        def CreaButton(parent, realY, image, numPage):
+            return self.img                                 # Retourne l'image          
 
-            # Creer un bouton
-            Tool = Button(parent, image=image, border=0, bg=self.LeaveColor, highlightthickness=0, bd=1, relief=FLAT
-                    , activebackground=self.LeaveColor, command= FuncUpFile, cursor="hand2" )            
-            Tool.pack( expand=True, fill=BOTH ) # Affiche le bouton
-
-            return Tool
-
-        def LabelBoutonValide(Parent, Yposition):
-            CheckLabelBoutton = Label(Parent, text=u"✔" )
-            CheckLabelBoutton.place(relx = 0.8, rely = Yposition, anchor = W, relwidth=0.2, relheight =0.2)
-            CheckLabelBoutton.configure(font=("Helvetica", 15, "bold"), fg="bisque", bg=colorGreen )              
-
-        def Bouton(Parent, Text, Yposition, command ):
-            helvetica = tkfont.Font(family='Helvetica', size=10, weight='bold')
-            Butt = Button(Parent, bg=self.bgColor ,fg="bisque" ,text=Text ,highlightthickness=0, relief=FLAT, cursor="plus", pady=20  
-                , activebackground=self.LeaveColor, command=command, state=DISABLED, font=helvetica )
-            Butt.place(relx = 0, rely = Yposition, anchor = W, relwidth=1, relheight =0.2)    
-
-            def LabelBoutonDisabled(Parent):
-                CheckLabelBoutton = Label( Parent, text=u"✘" )
-                CheckLabelBoutton.place(relx = 0.8, rely = Yposition, anchor = W, relwidth=0.2, relheight =0.2)
-                CheckLabelBoutton.configure(font=("Helvetica", 15, "bold"), fg="bisque", bg="#ff5050" )  
-
-            LabelBoutonDisabled( Parent) 
-
-            return Butt  
-
-        self.imageBalais    = Picture("logo/zelda.png")
-
-        # Creer un bouton
-        Tool = Button(self.centralFrame, image=self.imageBalais, border=0, bg=self.LeaveColor, highlightthickness=0, bd=1, relief=FLAT
-                , activebackground=self.LeaveColor, command= '#', cursor="hand2" )        
-        Tool.pack( expand=False, fill=Y, side=RIGHT ) # Affiche le bouton
-
-        # Fonction Balais ------------------------------------------------------------------------------------------------------------------------- 
-        container = Frame( self.centralFrame )   # Creation du container     
+        # Creation du container 
+        container = Frame( self.centralFrame )          
 
         # Creation de l'espace dessin
-        canvas = Canvas(container, bg= self.LeaveColor , highlightthickness=0, bd=1, relief=SUNKEN ) 
-        
+        canvas = Canvas(container, bg= self.LeaveColor , highlightthickness=0, bd=1, relief=SUNKEN )
+
+        # Définition des la Police d'écriture  
+        helvetica = tkfont.Font(family='Helvetica', size=10, weight='bold')
+
         # Creation du scrollbar
         scrollbar        = Scrollbar(container, orient="vertical", command=canvas.yview)
         scrollable_frame = Frame( canvas )
@@ -1207,43 +1158,53 @@ class OngletOrange :
 
         container.pack(               fill="both" , expand=True )
         canvas   .pack( side="left" , fill="both" , expand=True )          
-        scrollbar.pack( side="right", fill="y"                  )    
+        scrollbar.pack( side="right", fill="y"                  )   
 
-        # Frame Monter ---------------------------------------------------------------------------------------------------------------------------
-        FrameMonter = Frame(self.left_frame, bg=self.bgColor)
-        FrameMonter.place(relx = 0, rely = 3/20, anchor = SW, relwidth=1, relheight =3/20)
-
-        LABELBORDEREAU( FrameMonter , self.LeaveColor , "Monter Dossier" )
+        def CreationDeBouton( ):   
         
-        ButtMonter = Bouton(FrameMonter , "#" , 0.5, FuncUpFile )
-        ButtMonter['state'] = NORMAL
+            FrameMonter = Frame(self.left_frame, bg=self.LeaveColor)
+            FrameMonter.place(  relx=0, rely=12/20, anchor=SW, relwidth=1, relheight=0.3 )
 
-        image1    = Picture("logo/monter_6.png")
-        CreaButton(FrameMonter, 0.1, image1, FunCheckC3B)
+            FrameShape   = Frame(self.left_frame, bg=self.LeaveColor )
+            FrameShape.place(   relx=0, rely=15/20, anchor=SW, relwidth=1, relheight=0.3 )            
 
-        # Bouton C3B + Shape ---------------------------------------------------------------------------------------------------------------------
-        FrameC3B = Frame(self.left_frame, bg=self.LeaveColor )
-        FrameC3B.place(relx = 0, rely = 9/20, anchor = SW, relwidth=1, relheight =2/10 )
+            FrameChambre = Frame(self.left_frame, bg=self.LeaveColor )
+            FrameChambre.place( relx=0, rely=18/20, anchor=SW, relwidth=1, relheight=0.3 )            
 
-        LABELBORDEREAU( FrameC3B , self.OnColor , "Check" )
-        ButtC3B     = Bouton(FrameC3B, u"C3B ou C3A", 0.25 , FunCheckC3B ) # Analyse le Dossier Relevée de Chambre
+            listButtonTitre  = [ u"C3B ou C3A\t"     , u"Support .Shp\t"   , u"Câble .Shp\t"   , u"Bpe .Shp\t"   , u"Relevé de Chambre\t"   , u"Rename_C16\t"  , u"Appui Aérien\t" ]
+            listCommandShape = [ CheckC3bXlsx        , CheckSupportShp     , CheckCableShp     , CheckBpeShp     , CheckReleveChambre       , CheckRenameC16     , CheckAppuiAerien     ]
+            listButtonName   = [ u'ButtonAnalyseC3B' , u'ButtonSupportShp' , u'ButtonCableShp' , u'ButtonBpeShp' , u'ButtonReleveDeChambre' , u'ButtonRenameC16' , u'ButtonAppuiAerien' ]
 
-        # Bouton C3B + Shape ---------------------------------------------------------------------------------------------------------------------
-        FrameShape = Frame(self.left_frame, bg=self.LeaveColor )
-        FrameShape.place(relx = 0, rely = 13/20, anchor = SW, relwidth=1, relheight = 2/10 )
+            def LabelBoutonDisabled(Parent, Yposition):
+                
+                CheckLabelBoutton = Label( Parent, text=u"✘" )
+                CheckLabelBoutton.place(relx = 0.8, rely = Yposition, anchor = W, relwidth=0.2, relheight =0.2)
+                CheckLabelBoutton.configure(font=("Helvetica", 15, "bold"), fg="bisque", bg="#ff5050" )  
+            
+            print('')
+            for i in range(0 ,7):                
+                if i < 1 :                    
+                    Parent = FrameMonter
+                    print ('premier :\t' + str(i) + " " + str(listButtonTitre[i]) )
+                elif 0 < i < 4 :
+                    Parent = FrameShape
+                    print ('second :\t' + str(i) + " " + str(listButtonTitre[i]) )
+                else :
+                    Parent = FrameChambre
+                    print ('troisième :\t' + str(i) + " " + str(listButtonTitre[i]) )
 
-        LABELBORDEREAU( FrameShape , self.OnColor , "C3B + Shape" )
-        ShapeSupportButton = Bouton(FrameShape, u"Support\t" , 0.25, CheckSupport ) # comparaison entre C3B et le DBF du Shape Support
-        ShapeCableButton   = Bouton(FrameShape, u"Câble\t"   , 0.50, CheckCable   ) # comparaison entre C3B et le DBF du Shape Cable
-        ShapeBpeButton     = Bouton(FrameShape, u"BPE\t"     , 0.75, CheBPE       ) # comparaison entre C3B et le DBF du Shape BPE
-        
-        #  Bouton Sous-Dossier -------------------------------------------------------------------------------------------------------------------         
-        FrameChambre = Frame(self.left_frame, bg=self.LeaveColor )
-        FrameChambre.place(relx = 0, rely = 19/20 , anchor = SW, relwidth=1, relheight = 2/10 )
+                listButtonName[i] = Button(Parent, bg=self.bgColor ,fg="bisque" ,text=listButtonTitre[i] ,highlightthickness=0, relief=FLAT, cursor="plus", pady=20  
+                    , activebackground=self.LeaveColor, command=listCommandShape[i], state=NORMAL, font=helvetica )
 
-        LABELBORDEREAU( FrameChambre , self.OnColor , "Sous-Dossier" )
-        ButtReleve  = Bouton(FrameChambre, u"Relevé de \nChambre" , 0.25, CheckReleveChambre )     
-        ButNameC16  = Bouton(FrameChambre, u"Rename\n_C16\t"      , 0.50, Rename             )
-        ButtAppui   = Bouton(FrameChambre, u"Appui\t\nAérien\t"   , 0.75, CheckAppuiAerien   )
+                listButtonName[i].place(relx = 0, rely = i/7, anchor = W, relwidth=1, relheight =0.2)  
 
-        # Creation du Bouton ---------------------------------------------------------------------------------------------------------------------- 
+                LabelBoutonDisabled( Parent, i/7 )            
+
+            return listButtonName         
+         
+        ButtonAnalyseC3B, ButtonSupportShp, ButtonCableShp, ButtonBpeShp, ButtonReleveDeChambre, ButtonRenameC16 ,ButtonAppuiAerien = CreationDeBouton( ) 
+
+        #creation du Bouton Monter Fichier
+        Button(self.left_frame, image=Picture("logo\monter_6.png"), border=0, bg=self.LeaveColor, highlightthickness=0
+                    , bd=1, relief=FLAT, activebackground=self.LeaveColor, command= FuncUpFile, cursor="hand2" 
+                    ).place(  relx=0, rely=5/40, anchor=SW, relwidth=1, relheight=0.1)
