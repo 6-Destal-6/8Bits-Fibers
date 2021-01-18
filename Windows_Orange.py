@@ -7,6 +7,8 @@ from os import walk
 from os import path
 from os import rename
 
+from iteration_utilities import duplicates
+from iteration_utilities import unique_everseen
 
 from dbfread import DBF
 from PIL import Image, ImageTk
@@ -194,6 +196,15 @@ class OngletOrang :
                             NumB   = str( sh.cell(rowx=rx, colx=5).value)
                             if NumB == "" :
                                 NumB = u"<vide>"
+
+
+                            """ teste
+                            listC  = ["C","IMB","F","P","PT","A","AT","" ]
+                            listCT = ["P","A" ]
+                            lsitA  = ["IMB","A", "AT","F","P","PT" ]
+                            listAT = ["P","A" ]
+                            listP  = ["F","P","PT" ]
+                            """
 
                             if len(NumA) < 9 :
                                 Value = "►\t" + "Ligne : " + str(rx+1).zfill(3) + "\t\t" + "Alveole: "+Alveol + "\t" + "Type A = "+TypeA + "\t" + NumA + "\t\t" + "Type B = "+ TypeB  + "\t" + NumB
@@ -855,7 +866,7 @@ class OngletOrang :
         # Fonction qui analyse et compare le shape cable par rapport à la C3B -----------------------------------------------------------
         def CheckCableShp(): 
 
-            def ElementSeparee(Element):
+            def ElementSeparee(Element):                             
 
                 # Compare les Elements avec la liste DBFlistsansID
                 firstSepared  = Element.split('-')[0]
@@ -960,6 +971,7 @@ class OngletOrang :
                         
                             # S'arrete sur le shape cable.dbf
                             elif "cable.dbf" in File :
+
                                 inc += 1                                
                                 dbfFile  = (directory+"/"+File) # Créer le Chemin vers le Shape
 
@@ -1006,8 +1018,19 @@ class OngletOrang :
             LABELBORDEREAU( scrollable_frame , "black" , "Il y a " + str(nombreDeCable) + " câbles posées dans la C3B" )            
 
             # Entete
-            LABELRESULTAT( 10, "white", "bold", u"\t\t\t id_a \t\t\t   id_b\t\tdiam_cbl" )         
+            LABELRESULTAT( 10, "white", "bold", u"\t\t\t id_a \t\t\t   id_b\t\tdiam_cbl" ) 
 
+            # C3bListSansDoublon = list(dict.fromkeys(C3Blist)) # retire les doublons 
+
+            
+            i=0 
+            for Element in sorted(DBFlist) :
+                firstSepared, SecondSepared, ThirtSepared = ElementSeparee(Element)
+                Count = (DBFlist.count(Element) )                
+                if Count != 1 :
+                    i+=1
+                    LABELRESULTAT( 10, "pink", "bold", str(i).zfill(3) + u" - Vérifier le Doublon : \t" + str(firstSepared) + "\t\t" + str(SecondSepared) + "\t\t" +  str(ThirtSepared) )
+            
             # Boucle sur la liste Résultat des cables à Garder
             for Element in sorted(DBFlist) :                
                                 
@@ -1060,6 +1083,7 @@ class OngletOrang :
                         else :
                             LABELRESULTAT( 10, colorRed, "bold", u"Le câble partant de : \t" + firstSepared + "\tvers \t" + SecondSepared + u"\tØ "+ ThirtSepared + "\test présent dans la C3B mais absent de cable.shp" )
 
+            
             if len(DBFlist) == 0 :
                 Titre = LABELBORDEREAU( scrollable_frame , colorRed , "Le fichier cable.shp est manquant ou vide" )
                 Titre['fg'] = "black"
@@ -1130,7 +1154,7 @@ class OngletOrang :
         
         # Creation des Boutons --------------------------------------------------------------------------------------------------------------------              
         def Picture (Path) :            
-            Size     = int(self.screenHeight*0.05)          # Definit la taille du logo par rapport a l'ecran            
+            Size     = int(self.screenHeight*0.09)          # Definit la taille du logo par rapport a l'ecran            
             dirname  = path.dirname(path.abspath(__file__)) # definit le chemin jusqu au program                 
             picture  = path.join(dirname, Path)             # Definit le Chemin du PNG 
             original = Image.open(picture)                  # Ouvre le PNG               
@@ -1160,51 +1184,46 @@ class OngletOrang :
         canvas   .pack( side="left" , fill="both" , expand=True )          
         scrollbar.pack( side="right", fill="y"                  )   
 
-        def CreationDeBouton( ):   
-        
-            FrameMonter = Frame(self.left_frame, bg=self.LeaveColor)
-            FrameMonter.place(  relx=0, rely=12/20, anchor=SW, relwidth=1, relheight=0.3 )
+        def CreationDeBouton( ): 
 
-            FrameShape   = Frame(self.left_frame, bg=self.LeaveColor )
-            FrameShape.place(   relx=0, rely=15/20, anchor=SW, relwidth=1, relheight=0.3 )            
+            relheight = 0.1
 
-            FrameChambre = Frame(self.left_frame, bg=self.LeaveColor )
-            FrameChambre.place( relx=0, rely=18/20, anchor=SW, relwidth=1, relheight=0.3 )            
+            FrameShape   = Frame( self.left_frame )
+            FrameShape.place(   relx=0, rely=15/20, anchor=SW, relwidth=1, relheight=0.5 )         
 
             listButtonTitre  = [ u"C3B ou C3A\t"     , u"Support .Shp\t"   , u"Câble .Shp\t"   , u"Bpe .Shp\t"   , u"Relevé de Chambre\t"   , u"Rename_C16\t"  , u"Appui Aérien\t" ]
             listCommandShape = [ CheckC3bXlsx        , CheckSupportShp     , CheckCableShp     , CheckBpeShp     , CheckReleveChambre       , CheckRenameC16     , CheckAppuiAerien     ]
             listButtonName   = [ u'ButtonAnalyseC3B' , u'ButtonSupportShp' , u'ButtonCableShp' , u'ButtonBpeShp' , u'ButtonReleveDeChambre' , u'ButtonRenameC16' , u'ButtonAppuiAerien' ]
+            #listImageButton  = [ "./logo/butCable.png", "./logo/butSupport.png","./logo/butCable.png", "./logo/butSupport.png","./logo/butCable.png", "./logo/butSupport.png", "./logo/butSupport.png" ]
 
-            def LabelBoutonDisabled(Parent, Yposition):
+            def LabelBoutonDisabled(Yposition):
                 
-                CheckLabelBoutton = Label( Parent, text=u"✘" )
-                CheckLabelBoutton.place(relx = 0.8, rely = Yposition, anchor = W, relwidth=0.2, relheight =0.2)
+                CheckLabelBoutton = Label( FrameShape, text=u"✘" )
+                CheckLabelBoutton.place(relx = 15/20, rely = Yposition, anchor = W, relwidth=0.2, relheight =relheight)
                 CheckLabelBoutton.configure(font=("Helvetica", 15, "bold"), fg="bisque", bg="#ff5050" )  
-            
-            print('')
-            for i in range(0 ,7):                
-                if i < 1 :                    
-                    Parent = FrameMonter
-                    print ('premier :\t' + str(i) + " " + str(listButtonTitre[i]) )
-                elif 0 < i < 4 :
-                    Parent = FrameShape
-                    print ('second :\t' + str(i) + " " + str(listButtonTitre[i]) )
-                else :
-                    Parent = FrameChambre
-                    print ('troisième :\t' + str(i) + " " + str(listButtonTitre[i]) )
 
-                listButtonName[i] = Button(Parent, bg=self.bgColor ,fg="bisque" ,text=listButtonTitre[i] ,highlightthickness=0, relief=FLAT, cursor="plus", pady=20  
-                    , activebackground=self.LeaveColor, command=listCommandShape[i], state=NORMAL, font=helvetica )
+            for i in range(0 ,7):
 
-                listButtonName[i].place(relx = 0, rely = i/7, anchor = W, relwidth=1, relheight =0.2)  
+                """
+                image = Image.open( listImageButton[i]  )
+                image = image.resize((50,50), Image.ANTIALIAS) 
+                self.photo = ImageTk.PhotoImage(image)
+                """
 
-                LabelBoutonDisabled( Parent, i/7 )            
+                listButtonName[i] = Button(FrameShape, bg=self.bgColor, highlightthickness=0, cursor="hand2", fg="bisque"
+                    , relief=FLAT, activebackground=self.LeaveColor, command=listCommandShape[i], state=NORMAL, font=helvetica,text=listButtonTitre[i] )
 
-            return listButtonName         
-         
+                listButtonName[i].place(relx = 0, rely = i/7+.05, anchor = W, relwidth=1, relheight =0.2)  
+
+                LabelBoutonDisabled( i/7+.05 )            
+
+            return listButtonName  
+    
         ButtonAnalyseC3B, ButtonSupportShp, ButtonCableShp, ButtonBpeShp, ButtonReleveDeChambre, ButtonRenameC16 ,ButtonAppuiAerien = CreationDeBouton( ) 
+         
 
         #creation du Bouton Monter Fichier
-        Button(self.left_frame, image=Picture("logo\monter_6.png"), border=0, bg=self.LeaveColor, highlightthickness=0
-                    , bd=1, relief=FLAT, activebackground=self.LeaveColor, command= FuncUpFile, cursor="hand2" 
-                    ).place(  relx=0, rely=5/40, anchor=SW, relwidth=1, relheight=0.1)
+        Button(self.left_frame, image=Picture("logo/ButtonCable.png"), border=0, bg=self.bgColor, highlightthickness=0
+            , bd=1, relief=FLAT, activebackground=self.LeaveColor, command= FuncUpFile, cursor="hand2" 
+                ).place(  relx=0, rely=8/40, anchor=SW, relwidth=1, relheight=0.2)
+
