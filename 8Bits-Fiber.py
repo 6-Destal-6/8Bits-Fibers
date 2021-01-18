@@ -19,15 +19,16 @@ fontApp     = "Lucida Grande"
 class Application(tk.Tk):
 
     def __init__(self, *args, **kwargs):
-        tk.Tk.__init__(self, *args, **kwargs) 
+        tk.Tk.__init__(self, *args, **kwargs)         
 
         container = tk.Frame(self, background=bgColor )
-        container.pack(side=tk.TOP, fill=tk.BOTH, expand=True)     
-
+        container.pack(side=tk.TOP, fill=tk.BOTH, expand=True)        
            
         scWidth    = container.winfo_screenwidth()    # Largeur
         scHeight   = container.winfo_screenheight()   # Hauteur
         screenSize = ("{}x{}".format( int(scWidth*0.5) , int(scHeight*0.8)))
+
+
 
         # Taille de l application
         self.geometry(screenSize)
@@ -43,14 +44,20 @@ class Application(tk.Tk):
         topp_Frame   = tk.Frame(container, background=OnColor  , highlightthickness=0, bd=0, relief=tk.SUNKEN )        
         down_frame   = tk.Frame(container, background=OnColor  , highlightthickness=0, bd=1, relief=tk.SUNKEN )
         centralFrame = tk.Frame(container, background=OnColor  , highlightthickness=0, bd=1, relief=tk.SUNKEN )
-        left_frame   = tk.Frame(container, background=LeaveColor  , highlightthickness=0, bd=1, relief=tk.SUNKEN )
+        left_frame   = tk.Frame(container, background=bgColor  , highlightthickness=0, bd=1, relief=tk.SUNKEN )
         #-------------------------------------------------------
         
         #-------------------------------------------------------  
-        topp_Frame.pack  ( side = "top"   , expand=0, fill= "both", ipady=50 ) 
+        topp_Frame.pack  ( side = "top"   , expand=0, fill= "both" ) 
         down_frame.pack  ( side = "bottom", expand=0, fill= "both", ipady=20  )  
         left_frame.pack  ( side = "left"  , expand=0, fill= "both", pady=50, padx=50, ipadx=100 ) 
         centralFrame.pack( side = "left"  , expand=1, fill= "both", pady=50, ipadx=35 ) 
+
+        img = Image.open('./logo/titre2.png')
+        self.tkimage = ImageTk.PhotoImage(img)
+        tk.Label(topp_Frame,image = self.tkimage, background=LeaveColor).pack(expand=True, fill="both")
+
+
 
         # definit le chemin jusqu au program
         dirname = os.path.dirname(os.path.abspath(__file__))
@@ -114,11 +121,15 @@ class Application(tk.Tk):
         btnQuitter = tk.Button(down_frame, text="Quitter", bg=LeaveColor, fg="white", height=0, border=0, command=self.destroy)
         btnQuitter.place(relx = 0, rely = 1, anchor = tk.SW, relwidth=0.9, relheight =1)
         ChangeColor(btnQuitter,LeaveColor , OnColor )
-        # -----------------------------------------------------------------------------      
+        # ----------------------------------------------------------------------------- 
+        # 
+            
        
     def show_frame(self, page_name):
         frame = self.frames[page_name]
-        frame.tkraise()    
+        frame.tkraise() 
+
+    
 
 if __name__ == "__main__":
     app = Application()
