@@ -1130,45 +1130,23 @@ class OngletOrang :
 
             decalage = .05
 
-            image      = Image.open( icons[0] )
-            image      = image.resize((60,60), Image.ANTIALIAS)
-            self.iconC3b = ImageTk.PhotoImage(image)
-            LabelBoutonDisabled( self.iconC3b, 0/7+decalage ) 
+            self.icons = []
 
-            image      = Image.open( icons[1] )
-            image      = image.resize((60,60), Image.ANTIALIAS)
-            self.iconSupport  = ImageTk.PhotoImage(image)
-            LabelBoutonDisabled( self.iconSupport, 1/7+decalage) 
+            i=0
+            for pathIcon in icons :
 
-            image      = Image.open( icons[2] )
-            image      = image.resize((60,60), Image.ANTIALIAS)
-            self.iconCable  = ImageTk.PhotoImage(image)
-            LabelBoutonDisabled( self.iconCable, 2/7+decalage ) 
+                image = Image.open( pathIcon )
+                image = image.resize((60,60), Image.ANTIALIAS)
+                icon  = ImageTk.PhotoImage( image )                
+                              
+                LabelBoutonDisabled( icon, i/7+decalage ) 
+                self.icons.append( icon )                 
 
-            image      = Image.open( icons[3] )
-            image      = image.resize((60,60), Image.ANTIALIAS)
-            self.iconBoitier  = ImageTk.PhotoImage(image)
-            LabelBoutonDisabled( self.iconBoitier, 3/7+decalage ) 
-
-            image      = Image.open( icons[4] )
-            image      = image.resize((60,60), Image.ANTIALIAS)
-            self.iconReleve  = ImageTk.PhotoImage(image)
-            LabelBoutonDisabled( self.iconReleve, 4/7+decalage ) 
-
-            image      = Image.open( icons[5] )
-            image      = image.resize((60,60), Image.ANTIALIAS)
-            self.iconRename  = ImageTk.PhotoImage(image)
-            LabelBoutonDisabled( self.iconRename, 5/7+decalage ) 
-
-            image      = Image.open( icons[6] )
-            image      = image.resize((60,60), Image.ANTIALIAS)
-            self.iconAppui  = ImageTk.PhotoImage(image)
-            LabelBoutonDisabled( self.iconAppui, 6/7+decalage)            
-
-            for i in range(0 ,7) :    
                 listButtonName[i] = Button(FrameShape, bg=self.LeaveColor , highlightthickness=0, cursor="hand2", fg="cyan"
                     , relief=FLAT, activebackground=self.LeaveColor, command=listCommandShape[i], state=DISABLED, font=helvetica,text=listButtonTitre[i] )
-                listButtonName[i].place(relx = 16/40, rely = i/7+.05, anchor = W, relwidth=0.6, relheight =0.10)  
+                listButtonName[i].place(relx = 16/40, rely = i/7+.05, anchor = W, relwidth= 0.6, relheight = 0.10 ) 
+
+                i+=1 
 
             return listButtonName  
     
