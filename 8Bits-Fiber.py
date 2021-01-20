@@ -8,8 +8,8 @@ import sys,os
 from PIL import Image, ImageTk
 from ChangeColor import ChangeColor
 
-LeaveColor  = "gray9"  # gris foncé
-OnColor     = "gray6"  # gris moyen
+LeaveColor  = "gray6"  # gris foncé
+OnColor     = "gray9"  # gris moyen
 colorFont   = "white"
 fontApp     = "Lucida Grande"
 

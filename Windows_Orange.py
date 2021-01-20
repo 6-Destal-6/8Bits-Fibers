@@ -96,6 +96,8 @@ class OngletOrang :
                 Racine = filedialog.askdirectory(initialdir=Path,title='Choisissez un repertoire')
 
             if Racine != "" :
+
+                Label( scrollable_frame, bg=colorOrang, text="",width=int(self.screenWidth*0.054 ) ).pack( )
                 
                 Actived( ButtonAnalyseC3B       )
                 Actived( ButtonSupportShp       )
@@ -286,7 +288,7 @@ class OngletOrang :
         def CheckAppuiAerien(): 
 
             # espace
-            LABELRESULTAT( 10, "white", "normal", u"\n" )   
+            LABELRESULTAT( 9, "white", "normal", u"\n" )   
 
             # Affiche le nombre de calbes present dans la C3B
             LABELBORDEREAU( scrollable_frame , colorBlue , "Analyse du dossier Appui Aérien"  )
@@ -505,10 +507,7 @@ class OngletOrang :
             supportListShape = []
             NewSupportC3Blist= []
             supportC3Blist   = []
-            
-            inc              = 0
             nombreDeBpeShape = 0 
-            faute            = 0
 
             def supportAvecBoitier( interger, Type ):
 
@@ -527,7 +526,7 @@ class OngletOrang :
                 return nombreDeBPE , C3Blist , supportC3Blist
 
             # espace
-            LABELRESULTAT( 10, "white", "normal", u"\n" ) 
+            LABELRESULTAT( 9, "white", "normal", u"\n" ) 
 
             # Affiche le nombre de calbes present dans la C3B
             LABELBORDEREAU( scrollable_frame , colorBlue , "Analyse du nombres de boitiers"  )
@@ -564,48 +563,32 @@ class OngletOrang :
 
                         # Affiche le nombre de cables present dans la C3Bs
                         if nombreDeBpeShape != 0:
-
-                            LABELBORDEREAU( scrollable_frame , "black" , "Il y a " + str(nombreDeBpeShape) + " supports ayant un boitier dans le shape : " + File + "\t" + path.basename(directory)  )
-
                             for record in DBF(dbfFile):
                                 Value = str(record['id_support'])
                                 if Value != '' :
-                                    inc +=1                                    
-                                    LABELRESULTAT( 10, "white", "normal", str( inc ).zfill(3) + " \t " + str( Value ) ) 
-
                                     # Tous les supports se trouvant dans le Shape
                                     supportListShape.append(Value)            
 
             # Affiche le nombre de calbes present dans la C3B
             LABELBORDEREAU( scrollable_frame , "black" , "Il y a " + str(nombreDeBPE) + " supports ayant un boitier dans la C3B"  )
 
-            for Element in sorted(C3Blist) :
-                if Element != "" :                    
-                    firstSepared  = Element.split(' ')[0]
-                    SecondSepared = Element.split(' ')[3]
-                    # print (  "Element : " + firstSepared + "Element : " + SecondSepared      ) 
+            def RetourC3B( SecondNbr, LongText, texte):
+                firstSepared  = Element.split(' ')[0]
+                SecondSepared = Element.split(' ')[3]
+                if len(firstSepared) < 9 :
+                    LABELRESULTAT( 9, colorGreen, "bold", texte +  "\t\t" + firstSepared + "\t\t" + SecondSepared  ) 
+                else:
+                    LABELRESULTAT( 9, colorGreen, "bold", texte +  "\t\t" + firstSepared + "\t" + SecondSepared )
 
-                    if len(firstSepared) < 9 :
-                        LABELRESULTAT( 10, colorGreen, "bold", "Present dans la C3B : \t\t" + firstSepared + "\t\t" + SecondSepared  ) 
-                    else:
-                        LABELRESULTAT( 10, colorGreen, "bold", "Present dans la C3B : \t\t" + firstSepared + "\t" + SecondSepared ) 
+            for Element in sorted(C3Blist) :
+                if Element != "" :
+                    RetourC3B(3, 9 , "Present dans la C3B :" )
 
             for Element in sorted(supportC3Blist) :            
                 if Element not in C3Blist :
-                    firstSepared  = Element.split(' ')[0]
-                    SecondSepared = Element.split(' ')[1]
-                    # print (  "Element : " + firstSepared + "Element : " + SecondSepared      ) 
+                    RetourC3B(1, 8 , "Absent de la C3B :" )
 
-                    if len(Element) < 8 :
-                        LABELRESULTAT( 10, colorRed, "bold", "Absent de la C3B : \t\t"  + firstSepared + "\t\t" + SecondSepared ) 
-                    else:
-                        LABELRESULTAT( 10, colorRed, "bold", "Absent de la C3B : \t\t" + firstSepared + "\t" + SecondSepared ) 
-            
-            if inc == 0 :
-                Titre = LABELBORDEREAU( scrollable_frame , colorRed , "Le fichier bpe.shp est manquant ou vide" )
-                Titre['fg'] = "black"
-
-            LABELRESULTAT( 10, colorGreen, "bold", "" ) 
+            LABELRESULTAT( 9, colorGreen, "bold", "" ) 
             LABELBORDEREAU( scrollable_frame , "black" , "Il y a " + str(len(supportListShape) ) + " supports ayant un boitier dans le Shape"  )
 
             i,j=0,0
@@ -616,14 +599,11 @@ class OngletOrang :
 
                 if firstSepared in supportListShape :
                     i+=1
-                    print ("element trouvée : " + firstSepared)
-                    LABELRESULTAT( 10, colorGreen, "bold", str( i ).zfill(3) +" - Present dans bpe.shape : \t\t" + firstSepared )
+                    LABELRESULTAT( 9, colorGreen, "bold", str( i ).zfill(3) +" - Present dans bpe.shape : \t\t" + firstSepared )
            
                 else :
                     j+=1
-                    faute += 1
-                    print ("element non trouvée : " + firstSepared)
-                    LABELRESULTAT( 10, colorRed, "bold", str( j ).zfill(3) +" - Absent dans bpe.shape : \t\t" + firstSepared ) 
+                    LABELRESULTAT( 9, colorRed, "bold", str( j ).zfill(3) +" - Absent dans bpe.shape : \t\t" + firstSepared ) 
 
             i=0
             for Element in supportListShape :
@@ -631,9 +611,9 @@ class OngletOrang :
                 if Element not in NewSupportC3Blist and  Element != '' :
                     i+=1
                     print ("element trouvée en trop : " + firstSepared)
-                    LABELRESULTAT( 10, colorOrang, "bold", str( i ).zfill(3) + " - En trop dans bpe.shape : \t\t" + Element )
+                    LABELRESULTAT( 9, colorOrang, "bold", str( i ).zfill(3) + " - En trop dans bpe.shape : \t\t" + Element )
 
-            JusteOuFaux(faute) 
+            JusteOuFaux(j) 
 
         # Fonction qui analyse et compare le shape BPE par rapport à la C3B -------------------------------------------------------------
         
@@ -678,13 +658,13 @@ class OngletOrang :
             InseeListC3B        = []          
             nombreDeSupport     = 0
             increment           = 0
-            nombreDeSupportShape= 0
+            nbrDeSupportDsShape= 0
             faute               = 0
 
             try :
 
                 # espace
-                LABELRESULTAT( 10, "white", "normal", u"\n" )   
+                LABELRESULTAT( 9, "white", "normal", u"\n" )   
 
                 # Affiche le nombre de calbes present dans la C3B
                 LABELBORDEREAU( scrollable_frame , colorBlue , u"Analyse des Supports"  )
@@ -697,7 +677,7 @@ class OngletOrang :
 
                     # Sort les fichies de la liste de fichier
                     for File in sorted(filenames ) :
-                        nombreDeSupportShape= 0                      
+                        nbrDeSupportDsShape= 0                      
 
                         # S'arrete sur le fichier Fxxxxxxxxxxx_C3B.xlsx
                         if "C3B" in File or "C3A" in File:                    
@@ -719,15 +699,15 @@ class OngletOrang :
                             dbfFile  = (directory+"/"+File) 
 
                             for record in DBF(dbfFile):
-                                nombreDeSupportShape +=1                            
+                                nbrDeSupportDsShape +=1                            
 
                             # Affiche le nombre de cables present dans la C3Bs
-                            LABELBORDEREAU( scrollable_frame , "black" , "Il y a " + str(nombreDeSupportShape) + " supports présent dans le shape" )
+                            LABELBORDEREAU( scrollable_frame , "black" , "Il y a " + str(nbrDeSupportDsShape) + " supports présent dans le shape" )
 
                             for record in DBF(dbfFile):
                                 increment +=1
                                 Value = str(record['id_support'])
-                                LABELRESULTAT( 10, "white", "normal", str( increment ).zfill(3) + " \t " + str( Value ) ) 
+                                LABELRESULTAT( 9, "white", "normal", str( increment ).zfill(3) + " \t " + str( Value ) ) 
 
                                 # Tous les supports se trouvant dans le Shape
                                 supportListShape.append(Value)                
@@ -751,10 +731,10 @@ class OngletOrang :
 
                     if element != "" :
                         if "Chambre" in element :
-                            LABELRESULTAT( 10, colorGreen, "bold", element )
+                            LABELRESULTAT( 9, colorGreen, "bold", element )
                         else:
                             Actived( ButtonAppuiAerien  )
-                            LABELRESULTAT( 10, colorBlue , "bold", element )
+                            LABELRESULTAT( 9, colorBlue , "bold", element )
 
                 if len(supportListShape) == 0 :
                     Titre = LABELBORDEREAU( scrollable_frame , colorRed , "Le fichier support.shp est manquant, vide ou zippé " )
@@ -763,27 +743,24 @@ class OngletOrang :
                     faute += 1
 
                 else :
-                    # Affiche le nombre de calbes present dans la C3Bs
-                    LABELBORDEREAU( scrollable_frame , "black" , "Il y a " + str(len(supportListShape) ) + " supports présents dans le support.shp" )
-
                     for element in sorted(supportListC3B) :
                         # print ( "supportListC3B : " + str(element) )
                         if element not in supportListShape :
                             faute += 1
                             if len(element) < 8 :
-                                LABELRESULTAT( 10, colorRed, "bold", "Support : " + element + u"\t\test présent dans la C3B mais absent de Support.shp" ) 
+                                LABELRESULTAT( 9, colorRed, "bold", "Support : " + element + u"\t\test présent dans la C3B mais absent de Support.shp" ) 
 
                             else :
-                                LABELRESULTAT( 10, colorRed, "bold", "Support : " + element + u"\test présent dans la C3B mais absent de Support.shp" )         
+                                LABELRESULTAT( 9, colorRed, "bold", "Support : " + element + u"\test présent dans la C3B mais absent de Support.shp" )         
 
                     for element in sorted(supportListShape) :
                         # print ( "supportListShape : " + str(element) )
                         if element not in supportListC3B :
                             faute += 1
                             if element == "" :
-                                LABELRESULTAT( 10, colorOrang, "bold", u"Support : <vide> à supprimer du Shape" )
+                                LABELRESULTAT( 9, colorOrang, "bold", u"Support : <vide> à supprimer du Shape" )
                             else :
-                                LABELRESULTAT( 10, colorOrang, "bold", u"Support : " + element + " à supprimer du Shape" )  
+                                LABELRESULTAT( 9, colorOrang, "bold", u"Support : " + element + " à supprimer du Shape" )  
                 # ------------------------------------------------------------------------------------------------------------------------------------
                 # ------------------------------------------------------------------------------------------------------------------------------------
                 InseeListC3B= list(dict.fromkeys(InseeListC3B)) # retire les doublons 
@@ -799,18 +776,18 @@ class OngletOrang :
                 for commune in InseeListC3B :
                     if int(commune) in val_list :
                         #print( u"valeur Trouvée : " + str(commune) )
-                        LABELRESULTAT( 10, "pink1", "bold", u"Commune : " + str(commune) + " \tTrouvée")  
+                        LABELRESULTAT( 9, "pink1", "bold", u"Commune : " + str(commune) + " \tTrouvée")  
 
                     else :
                         #print( u"valeur Inconnue : " + str(commune) )
-                        LABELRESULTAT( 10, "orchid1", "bold", u"Commune : " + str(commune) + " \tInconnue")
+                        LABELRESULTAT( 9, "orchid1", "bold", u"Commune : " + str(commune) + " \tInconnue")
                 # ------------------------------------------------------------------------------------------------------------------------------------
                 # ------------------------------------------------------------------------------------------------------------------------------------
                 JusteOuFaux(faute)              
                       
             except Exception as e:
                 # print("Il manque le Champ " + str( e )  + " dans le Shape Support ")
-                LABELRESULTAT( 10, colorRed, "bold", " \n\n" + str( e )  + " \nfermé le fichier Excel avant analyse" )
+                LABELRESULTAT( 9, colorRed, "bold", " \n\n" + str( e )  + " \nfermé le fichier Excel avant analyse" )
      
         # Fonction qui analyse et compare le shape support par rapport à la C3B ---------------------------------------------------------
 
@@ -840,7 +817,7 @@ class OngletOrang :
                 idValue   = str(record[id])     # Récupere les Valeurs du champ id
                 typeValue = str(record[type])   # Récupere les Valeurs du champ type
 
-                # Si la Case est égale à AT remplacer la valeur par "SupportTiers"
+                # Si la Case est égale à AT ou F remplacer la valeur par "SupportTiers"
                 if typeValue == "AT" or typeValue == "F" :
                     idValue = "SupportTiers"
 
@@ -854,12 +831,8 @@ class OngletOrang :
             # Initialisation des Listes
             C3Blist         = []
             DBFlist         = []
-            NroDBFlist      = []
             nombreDeCable   = 0
             inc             = 0
-
-            # espace
-            LABELRESULTAT( 10, "white", "normal", u"\n" )   
 
             # Affiche le nombre de calbes present dans la C3B
             LABELBORDEREAU( scrollable_frame , colorBlue , u"Analyse des Câbles"  )
@@ -870,11 +843,40 @@ class OngletOrang :
                 # Sort les fichies de la liste de fichier
                 for File in sorted(filenames ) :
 
-                    if path.basename(directory) == u"Check" :  
+                    try :
+                        if "C3B" in File :
 
-                        if "cable.dbf" in File :
-                            inc += 1                                                   
-                            dbfFile = (directory+"/"+File) # Créer le Chemin vers le Shape
+                            # Monte le fichier Fxxxxxxxxxxx_C3B.xlsx
+                            sh = RecupExcelPatch( directory , File , "C3B")  
+
+                            # Boucle sur toutes les lignes du fichier pour récupérer les informations                        
+                            depart = 11                  
+                            for rx in range( depart , sh.nrows):
+
+                                # S'arrete sur la Colonne P : Câble
+                                CABLE   = str( sh.cell(rowx=rx, colx=15).value)
+
+                                # Continue le Programme Uniquement si le Câble est Posé
+                                if CABLE != u"Câble non posé" :                                        
+
+                                    SUP1ORT = ReconnaissanceSupport(3)
+                                    SUP2ORT = ReconnaissanceSupport(5)                                        
+
+                                    # S'arrete sur la Colonne K : Diamètre du Câble à Poser
+                                    DIAM    = str( sh.cell(rowx=rx, colx=10).value)
+
+                                    # Réunie Chaques Valeurs
+                                    Value = SUP1ORT +"-"+ SUP2ORT +"-"+ DIAM
+                                    C3Blist.append( Value )  
+
+                                    # Nombre de Câble                                        
+                                    nombreDeCable += 1  
+                    
+                        # S'arrete sur le shape cable.dbf
+                        elif "cable.dbf" in File :
+
+                            inc += 1                                
+                            dbfFile  = (directory+"/"+File) # Créer le Chemin vers le Shape
 
                             # Boucle sur chaque ligne du fichier
                             for record in DBF(dbfFile):
@@ -884,140 +886,56 @@ class OngletOrang :
 
                                 # Réunie Chaques Valeurs
                                 Value = IDAValue + "-" + IDBValue + "-" + IDiamValue
-                                NroDBFlist.append( Value )
+                                DBFlist.append( Value )
 
-                    else :
-
-                        try :
-                            # S'arrete sur le fichier Fxxxxxxxxxxx_C3B.xlsx
-                            if "C3B" in File :
-
-                                # Monte le fichier Fxxxxxxxxxxx_C3B.xlsx
-                                sh = RecupExcelPatch( directory , File , "C3B")  
-
-                                # Boucle sur toutes les lignes du fichier pour récupérer les informations                        
-                                depart = 11    # Debute appartir de la ligne 11                    
-                                for rx in range( depart , sh.nrows):
-
-                                    # S'arrete sur la Colonne P : Câble
-                                    CABLE   = str( sh.cell(rowx=rx, colx=15).value)
-
-                                    # Continue le Programme Uniquement si le Câble est Posé
-                                    if CABLE != u"Câble non posé" :                                        
-
-                                        SUP1ORT = ReconnaissanceSupport(3)
-                                        SUP2ORT = ReconnaissanceSupport(5)                                        
-
-                                        # S'arrete sur la Colonne K : Diamètre du Câble à Poser
-                                        DIAM    = str( sh.cell(rowx=rx, colx=10).value)
-
-                                        # Réunie Chaques Valeurs
-                                        Value = SUP1ORT +"-"+ SUP2ORT +"-"+ DIAM
-                                        C3Blist.append( Value )  
-
-                                        # Nombre de Câble                                        
-                                        nombreDeCable += 1  
-                        
-                            # S'arrete sur le shape cable.dbf
-                            elif "cable.dbf" in File :
-
-                                inc += 1                                
-                                dbfFile  = (directory+"/"+File) # Créer le Chemin vers le Shape
-
-                                # Boucle sur chaque ligne du fichier
-                                for record in DBF(dbfFile):
-
-                                    IDAValue, IDiamValue = RecupereSupport('id_a' , 'type_a' )
-                                    IDBValue, IDiamValue = RecupereSupport('id_b' , 'type_b' )
-
-                                    # Réunie Chaques Valeurs
-                                    Value = IDAValue + "-" + IDBValue + "-" + IDiamValue
-                                    DBFlist.append( Value )
-
-                        except Exception as e:
-                            LABELRESULTAT( 10, colorRed, "bold", " \n\n" + str( e )  + " \nfermé le fichier Excel avant analyse" )   
-           
-            j=0
-            # Boucle sur la liste Résultat des cables à Garder
-            for Element in sorted(NroDBFlist) :
-                j+=1
+                    except Exception as e:
+                        LABELRESULTAT( 10, colorRed, "bold", " \n\n" + str( e )  + " \nfermé le fichier Excel avant analyse" )   
+        
+            def TextJustify( color, texte, tab1, tab2, tab3, tab4, tab5 , tab6, tab7, tab8, tab9, tab10, tab11 ):
                 firstSepared, SecondSepared, ThirtSepared = ElementSeparee(Element)
-                if len( firstSepared ) < 9 :                        
+                if len( firstSepared ) < 9 :
                     if len( SecondSepared ) < 9 and SecondSepared != "Immeuble" :
-                        LABELRESULTAT( 10, "pink" , "bold", str(j) + u"\tCâble à supprimer du Shape : \t" + str(firstSepared) + "\t\t" + str(SecondSepared) + "\t\t" +  str(ThirtSepared) )
+                        LABELRESULTAT( 9, color, "bold", texte + tab1 + str(firstSepared) + tab2 + str(SecondSepared) + tab3 +  str(ThirtSepared) )
                     else :
-                        LABELRESULTAT( 10, "pink", "bold", str(j) + u"\tCâble à supprimer du Shape : \t" + str(firstSepared) + "\t\t" + str(SecondSepared) + "\t" +  str(ThirtSepared) )
-
+                        LABELRESULTAT( 9, color, "bold", texte + tab4 + str(firstSepared) + tab5 + str(SecondSepared) + tab6 +  str(ThirtSepared) )
                 else :
                     if len( SecondSepared ) < 9 and SecondSepared != "Immeuble" :
-                        LABELRESULTAT( 10, "pink", "bold", str(j) + u"\tCâble à supprimer du Shape : \t" + str(firstSepared) + "\t" + str(SecondSepared) + "\t\t" +  str(ThirtSepared) )
+                        LABELRESULTAT( 9, color, "bold", texte + tab7 + str(firstSepared) + tab8 + str(SecondSepared) + tab9 +  str(ThirtSepared) )
                     else :
-                        LABELRESULTAT( 10, "pink", "bold", str(j) + u"\tCâble à supprimer du Shape : \t" + str(firstSepared) + "\t" + str(SecondSepared) + "\t" +  str(ThirtSepared) )
-         
+                        LABELRESULTAT( 9, color, "bold", texte + tab10 + str(firstSepared) + tab11 + str(SecondSepared) + "\t" +  str(ThirtSepared) )
+            
             # Affiche le nombre de calbes present dans la C3B
             LABELBORDEREAU( scrollable_frame , "black" , "Il y a " + str(nombreDeCable) + " câbles posées dans la C3B" )            
 
             # Entete
-            LABELRESULTAT( 10, "white", "bold", u"\t\t\t id_a \t\t\t   id_b\t\tdiam_cbl" ) 
+            LABELRESULTAT( 10, "white", "bold", u"\t\t\t\t id_a \t\t   id_b\t\tdiam_cbl" ) 
             
-            i=0 
+            i=1 
             for Element in sorted(DBFlist) :
                 firstSepared, SecondSepared, ThirtSepared = ElementSeparee(Element)
                 Count = (DBFlist.count(Element) )                
-                if Count != 1 :
+                if Count != 1 :                    
+                    LABELRESULTAT( 10, "pink", "bold", str(i).zfill(3) + u" - Vérifier le Doublon : \t\t" + str(firstSepared) + "\t" + str(SecondSepared) + "\t" +  str(ThirtSepared) )
                     i+=1
-                    LABELRESULTAT( 10, "pink", "bold", str(i).zfill(3) + u" - Vérifier le Doublon : \t" + str(firstSepared) + "\t\t" + str(SecondSepared) + "\t\t" +  str(ThirtSepared) )
-            
-            # Boucle sur la liste Résultat des cables à Garder
-            for Element in sorted(DBFlist) :                
-                                
-                # Compare les Elements avec la liste DBFlistsansID
-                if Element not in C3Blist :
-                    firstSepared, SecondSepared, ThirtSepared = ElementSeparee(Element)
-                    if len( firstSepared ) < 9 :                        
-                        if len( SecondSepared ) < 9 and SecondSepared != "Immeuble" :
-                            LABELRESULTAT( 10, colorOrang, "bold", u"Câble à supprimer du Shape : \t" + str(firstSepared) + "\t\t" + str(SecondSepared) + "\t\t" +  str(ThirtSepared) )
-                        else :
-                            LABELRESULTAT( 10, colorOrang, "bold", u"Câble à supprimer du Shape : \t" + str(firstSepared) + "\t\t" + str(SecondSepared) + "\t" +  str(ThirtSepared) )
 
-                    else :
-                        if len( SecondSepared ) < 9 and SecondSepared != "Immeuble" :
-                            LABELRESULTAT( 10, colorOrang, "bold", u"Câble à supprimer du Shape : \t" + str(firstSepared) + "\t" + str(SecondSepared) + "\t\t" +  str(ThirtSepared) )
-                        else :
-                            LABELRESULTAT( 10, colorOrang, "bold", u"Câble à supprimer du Shape : \t" + str(firstSepared) + "\t" + str(SecondSepared) + "\t" +  str(ThirtSepared) )
+            # Début de l'analyse du Shape
+            for Element in sorted(DBFlist) :   
                 
-                else :  
-                    firstSepared, SecondSepared, ThirtSepared = ElementSeparee(Element)
-                    if len( firstSepared ) < 9 :
-                        if len( SecondSepared ) < 9 and SecondSepared != "Immeuble" :
-                            LABELRESULTAT( 10, colorGreen, "bold", u"\tCâble à Garder : \t\t" + str(firstSepared) + "\t\t" + str(SecondSepared) + "\t\t" +  str(ThirtSepared) )
-                        else :
-                            LABELRESULTAT( 10, colorGreen, "bold", u"\tCâble à Garder : \t\t" + str(firstSepared) + "\t\t" + str(SecondSepared) + "\t" +  str(ThirtSepared) )
+                if Element not in C3Blist :
+                    # Dectecte les Câbles en trop dans le Shape :
+                    TextJustify(colorOrang , u"Câble à supprimer du Shape : ", 
+                    "\t" , "\t\t", "\t" , "\t" , "\t\t", "\t\t", "\t" , "\t", "\t\t" , "\t" , "\t"  ) 
+                else : 
+                    # Dectecte les Câbles justes ► présent dans le Shape et present dans la C3B :
+                    TextJustify(colorGreen , u"\tCâble à Garder : ",
+                    "\t\t" , "\t\t", "\t\t" , "\t\t" , "\t\t", "\t", "\t\t" , "\t", "\t\t" , "\t\t" , "\t" ) 
 
-                    else :
-                        if len( SecondSepared ) < 9 and SecondSepared != "Immeuble" :
-                            LABELRESULTAT( 10, colorGreen, "bold", u"\tCâble à Garder : \t\t" + str(firstSepared) + "\t" + str(SecondSepared) + "\t\t" +  str(ThirtSepared) )
-                        else :
-                            LABELRESULTAT( 10, colorGreen, "bold", u"\tCâble à Garder : \t\t" + str(firstSepared) + "\t" + str(SecondSepared) + "\t" +  str(ThirtSepared) )
-
-            # Boucle sur la liste du DBF pour sortir chaque Element #
+            # Dectecte les Câbles manquants dans le Shape :
             for Element in sorted(C3Blist) :
-                # Compare les Elements avec la liste DBFlistsansID
-                if Element not in DBFlist :                    
-                    firstSepared, SecondSepared, ThirtSepared = ElementSeparee(Element)
-                    if len(firstSepared) <9 :
-                        if len( SecondSepared ) < 9 :
-                            LABELRESULTAT( 10, colorRed, "bold", u"Le câble partant de : \t" + firstSepared + "\t\tvers \t" + SecondSepared + u"\t\tØ " + ThirtSepared + "\test présent dans la C3B mais absent de cable.shp" )
-                        else :
-                            LABELRESULTAT( 10, colorRed, "bold", u"Le câble partant de : \t" + firstSepared + "\t\tvers \t" + SecondSepared + u"\tØ "+ ThirtSepared + "\test présent dans la C3B mais absent de cable.shp" )
+                if Element not in DBFlist : 
+                    TextJustify(colorRed , u"Câble à ajouter sur le Shape : ", 
+                    "\t" , "\t\t", "\t" , "\t" , "\t\t", "\t\t", "\t" , "\t", "\t\t" , "\t" , "\t" )  
 
-                    else :
-                        if len( SecondSepared ) < 9 :
-                            LABELRESULTAT( 10, colorRed, "bold", u"Le câble partant de : \t" + firstSepared + "\tvers \t" + SecondSepared + u"\t\tØ " + ThirtSepared + "\test présent dans la C3B mais absent de cable.shp" )
-
-                        else :
-                            LABELRESULTAT( 10, colorRed, "bold", u"Le câble partant de : \t" + firstSepared + "\tvers \t" + SecondSepared + u"\tØ "+ ThirtSepared + "\test présent dans la C3B mais absent de cable.shp" )
-            
             if len(DBFlist) == 0 :
                 Titre = LABELBORDEREAU( scrollable_frame , colorRed , "Le fichier cable.shp est manquant ou vide" )
                 Titre['fg'] = "black"
@@ -1075,10 +993,10 @@ class OngletOrang :
 
             # comptabilise le nombre de fichiers renommés
             if RenameCount == 0 :
-                LABELRESULTAT( 10, "white", "normal", "Tous les Fichiers de Relevé de chambre sont bien nommés") 
+                LABELRESULTAT( 9, "white", "normal", "Tous les Fichiers de Relevé de chambre sont bien nommés") 
                 Disabled( ButtonRenameC16 )
             else :
-                LABELRESULTAT( 10, "white", "normal", str(RenameCount) + " Fichiers ont été Renommés") 
+                LABELRESULTAT( 9, "white", "normal", str(RenameCount) + " Fichiers ont été Renommés") 
 
         # Creation des Boutons --------------------------------------------------------------------------------------------------------------------              
         def Picture (Path) :            
@@ -1091,10 +1009,14 @@ class OngletOrang :
             return self.img                                 # Retourne l'image          
 
         # Creation du container 
-        container = Frame( self.centralFrame )          
+        container = Frame( self.centralFrame )
+
+        def _on_mousewheel(event):
+            canvas.yview_scroll(int(-1*(event.delta/120) ), "units")          
 
         # Creation de l'espace dessin
         canvas = Canvas(container, bg= self.LeaveColor , highlightthickness=0, bd=1, relief=SUNKEN )
+        canvas.bind_all("<MouseWheel>", _on_mousewheel)        
 
         # Définition des la Police d'écriture  
         helvetica = tkfont.Font(family='Arcade', size=17, weight='bold')
@@ -1121,9 +1043,6 @@ class OngletOrang :
             listCommandShape = [ CheckC3bXlsx        , CheckSupportShp     , CheckCableShp     , CheckBpeShp     , CheckReleveChambre       , CheckRenameC16     , CheckAppuiAerien     ]
             listButtonName   = [ u'ButtonAnalyseC3B' , u'ButtonSupportShp' , u'ButtonCableShp' , u'ButtonBpeShp' , u'ButtonReleveDeChambre' , u'ButtonRenameC16' , u'ButtonAppuiAerien' ]
 
-            def LabelBoutonDisabled(photo, Yposition):                    
-                Label( FrameShape, image=photo, bg=self.LeaveColor ).place(relx = 0.05, rely = Yposition, anchor = W)
-
             icons = ["./logo/Button4K-MenuC3B.png","./logo/Button4K-MenuSupport.png","./logo/Button4K-MenuCable.png"
                         ,"./logo/Button4K-MenuBoitier.png","./logo/Button4K-MenuReleve.png"
                         ,"./logo/Button4K-MenuRename.png","./logo/Button4K-MenuSupport.png" ] 
@@ -1139,12 +1058,12 @@ class OngletOrang :
                 image = image.resize((60,60), Image.ANTIALIAS)
                 icon  = ImageTk.PhotoImage( image )                
                               
-                LabelBoutonDisabled( icon, i/7+decalage ) 
+                Label( FrameShape, image=icon, bg=self.LeaveColor ).place(relx = 0.05, rely = i/7+decalage, anchor = W)
                 self.icons.append( icon )                 
 
                 listButtonName[i] = Button(FrameShape, bg=self.LeaveColor , highlightthickness=0, cursor="hand2", fg="cyan"
                     , relief=FLAT, activebackground=self.LeaveColor, command=listCommandShape[i], state=DISABLED, font=helvetica,text=listButtonTitre[i] )
-                listButtonName[i].place(relx = 16/40, rely = i/7+.05, anchor = W, relwidth= 0.6, relheight = 0.10 ) 
+                listButtonName[i].place(relx = 16/40, rely = i/7+decalage, anchor = W, relwidth= 0.6, relheight = 0.10 ) 
 
                 i+=1 
 
