@@ -904,7 +904,6 @@ class OngletOrang :
                 Titre['fg'] = "black"
         # Fonction qui analyse et compare le shape cable par rapport à la C3B ---------------------------------------------------------------------
 
-
         # Renomme les fichiers 88516/1431.xlsx en 88516/1431_C16.xlsx -----------------------------------------------------------------------------  
         def CheckRenameC16():
 
