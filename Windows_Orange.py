@@ -42,6 +42,7 @@ class OngletOrang :
         colorGreen = "SeaGreen3"
         colorBlue  = "cornflower blue"
         colorOrang = "tan1"
+        colorGray  = "gray63"
 
         def Actived(Bouton):
             if Bouton["state"] == DISABLED:
@@ -294,11 +295,8 @@ class OngletOrang :
             LABELBORDEREAU( scrollable_frame , colorBlue , "Analyse du dossier Appui Aérien"  )
 
             global C3Blist 
-            C6List          = []
-            PoteauxFauxList = []
-            faute           = 0
-            increment       = 0  
-            inc             = 0 
+            C6List , PoteauxFauxList = [] , []
+            faute, increment ,   inc = 0 , 0 , 0
 
             # Retrouve tous les chemins , les dossiers et les fichiers de Racine
             for directory, dirnames, filenames  in walk(Racine):                 
@@ -308,7 +306,8 @@ class OngletOrang :
                     # Sort les fichies de la liste de fichier                
                     for File in sorted(filenames ) :
                         
-                        if "C6" in File :  
+                        if "C6" in File : 
+
                             sh = RecupExcelPatch( directory , File, "C6" )
 
                             # Boucle sur toutes les lignes du fichier pour récupérer les informations                        
@@ -324,7 +323,7 @@ class OngletOrang :
                                         PoteauxFauxList.append( str(Support) )
 
             # Affiche le nombre de calbes present dans la C3B
-            LABELBORDEREAU( scrollable_frame, "black", "Il y a "+ str(len(C6List)) + " Poteaux dans "+ File )
+            LABELBORDEREAU( scrollable_frame, "black", "Il y a "+ str(len(C6List)) + " Poteaux dans la C6 " )
 
             listGespot = []  
             inc+=1
@@ -339,12 +338,10 @@ class OngletOrang :
 
                     if resultat[1] not in C6List : 
                         LABELRESULTAT( 9, colorRed , "bold", u"►\t" + str(firstSepared) + " " + str(SecondSepared) + u"\test présent dans la C3B mais absent de la C6" )
-
                     else :
-                        LABELRESULTAT( 9, colorGreen, "bold", u"►\t" + str(firstSepared) + " " + str(SecondSepared) + u"\t Ok" )
+                        LABELRESULTAT( 9, colorBlue , "bold", u"►\t" + str(firstSepared) + " " + str(SecondSepared) + u"\t Ok" )
 
-                elif "GESPOT" in File :
-                    print ("GESPOT : " + str(File[7:-5] ) )             
+                elif "GESPOT" in File :         
                     listGespot.append( File[7:-5] )
 
             # Affiche le nombre de calbes present dans la C3Bs
@@ -403,10 +400,22 @@ class OngletOrang :
             global mylistFOA
             global C3Blist
 
-            mylistFOA           = []
-            addNexList          = []
-            addC3BChambreList   = []
-            NewElementFOA       = []        
+            # ----------------------------------------------------------------------------------------------------
+            def ResultatValidation( color , varText , texte ) :
+
+                mylistFOA.append( File[:len(File)-9] ) 
+
+                if File[len(File)-9:-5] == "_C16" :
+                    if len(File) < 18 :
+                        LABELRESULTAT( 9, color, varText, File + texte ) 
+                    else:
+                        LABELRESULTAT( 9, color, varText, File + texte ) 
+                else:
+                    LABELRESULTAT( 9, colorRed, varText , File + str("\t◄ Manque _C16 à la fin") )
+                    Actived(ButtonRenameC16)
+            # ----------------------------------------------------------------------------------------------------
+
+            mylistFOA , addNexList , addC3BChambreList , NewElementFOA = [] , [] , [] , []
 
             for element in  C3Blist:
                 addNexList.append( element.split(" ")[2] ) # Renvoie > 88516/152
@@ -436,35 +445,13 @@ class OngletOrang :
                             if File[len(File)-8:-4] == "_C16" :
                                 LABELRESULTAT( 9, "white", "normal", File ) 
                             else:
-                                LABELRESULTAT( 9, "#ff5050", "bold", File + str(" ◄ Manque _C16 à la fin") )
+                                LABELRESULTAT( 9, colorRed, "bold", File + str(" ◄ Manque _C16 à la fin") )
 
                         elif File[len(File)-4:] == "xlsx":
-
                             if Newfilenames  in addNexList :
-                                mylistFOA.append( File[:len(File)-9] ) 
-
-                                if File[len(File)-9:-5] == "_C16" :
-                                    if len(File) < 18 :
-                                        LABELRESULTAT( 9, colorGreen, "bold", File + str("\t\t◄ Nécessaire donc OK") ) 
-                                    else:
-                                        LABELRESULTAT( 9, colorGreen, "bold", File + str("\t◄ Nécessaire donc OK") ) 
-
-                                else:
-                                    LABELRESULTAT( 9, "#ff5050", "bold", File + str("\t◄ Nécessaire : Manque _C16 à la fin") )
-                                    Actived(ButtonRenameC16) 
-
+                                ResultatValidation( colorGreen , "bold" , str("\t\t◄ Nécessaire donc OK") )
                             else :
-                                mylistFOA.append( File[:len(File)-9] ) 
-                                
-                                if File[len(File)-9:-5] == "_C16" :
-                                    if len(File) < 9 :
-                                        LABELRESULTAT( 9, "gray63", "normal", File + str("\t◄ Pas Nécessaire à Retirer du dossier \"Relevé de Chambre\"") )
-                                    else:
-                                        LABELRESULTAT( 9, "gray63", "normal", File + str("\t\t◄ Pas Nécessaire à Retirer du dossier \"Relevé de Chambre\"") )
-
-                                else:
-                                    LABELRESULTAT( 9, "#ff5050", "bold", File + str("\t◄ Manque _C16 à la fin") )
-                                    Actived(ButtonRenameC16) 
+                                ResultatValidation( colorGray , "normal" ,  str("\t\t◄ Pas Nécessaire à Retirer du dossier \"Relevé de Chambre\"") ) 
 
             for element in ChambreC3Blist :
                 NewElement = element.split(" ")[2]
@@ -478,9 +465,6 @@ class OngletOrang :
             # retire les doublons
             NewElementFOA     = list(dict.fromkeys(NewElementFOA))       
             addC3BChambreList = list(dict.fromkeys(addC3BChambreList))
-
-            # print ("NewElementFOA : " + str(NewElementFOA) )
-            # print ("addC3BChambreList : " + str(addC3BChambreList) )
             i=0
 
             dirname = path.dirname( path.abspath(__file__))
@@ -503,15 +487,10 @@ class OngletOrang :
         def CheckBpeShp() :  
 
             # Initialisation des Listes
-            C3Blist          = []            
-            supportListShape = []
-            NewSupportC3Blist= []
-            supportC3Blist   = []
+            C3Blist , supportListShape , supportListShape , NewSupportC3Blist , supportC3Blist = [] , [] , [] , [] , []        
             nombreDeBpeShape = 0 
 
             def supportAvecBoitier( interger, Type ):
-
-                nombreDeBPE      = 0
 
                 if Boitier[0] == Type :
 
@@ -521,12 +500,11 @@ class OngletOrang :
                     if Cable != u"Câble non posé" :
                         supportC3Blist.append(  support + " \t " + Boitier )
                         C3Blist.append( support + " \t " + Boitier )
-                        nombreDeBPE += 1
 
                 return nombreDeBPE , C3Blist , supportC3Blist
 
             # espace
-            LABELRESULTAT( 9, "white", "normal", u"\n" ) 
+            LABELRESULTAT( 9, "gray99", "bold", u"\n" ) 
 
             # Affiche le nombre de calbes present dans la C3B
             LABELBORDEREAU( scrollable_frame , colorBlue , "Analyse du nombres de boitiers"  )
@@ -574,8 +552,11 @@ class OngletOrang :
 
             def RetourC3B( SecondNbr, LongText, texte):
                 firstSepared  = Element.split(' ')[0]
-                SecondSepared = Element.split(' ')[3]
-                if len(firstSepared) < 9 :
+                SecondSepared = Element.split(' ')[SecondNbr]
+
+                NewSupportC3Blist.append(firstSepared)
+
+                if len(firstSepared) < LongText :
                     LABELRESULTAT( 9, colorGreen, "bold", texte +  "\t\t" + firstSepared + "\t\t" + SecondSepared  ) 
                 else:
                     LABELRESULTAT( 9, colorGreen, "bold", texte +  "\t\t" + firstSepared + "\t" + SecondSepared )
@@ -599,15 +580,13 @@ class OngletOrang :
 
                 if firstSepared in supportListShape :
                     i+=1
-                    LABELRESULTAT( 9, colorGreen, "bold", str( i ).zfill(3) +" - Present dans bpe.shape : \t\t" + firstSepared )
-           
+                    LABELRESULTAT( 9, colorGreen, "bold", str( i ).zfill(3) +" - Present dans bpe.shape : \t\t" + firstSepared )           
                 else :
                     j+=1
                     LABELRESULTAT( 9, colorRed, "bold", str( j ).zfill(3) +" - Absent dans bpe.shape : \t\t" + firstSepared ) 
 
             i=0
             for Element in supportListShape :
-                # print ("supportListShape" + str(Element) )
                 if Element not in NewSupportC3Blist and  Element != '' :
                     i+=1
                     print ("element trouvée en trop : " + firstSepared)
@@ -623,8 +602,7 @@ class OngletOrang :
             global C3Blist     
             global ChambreC3Blist
 
-            Actived(ButtonReleveDeChambre) 
-                   
+            Actived(ButtonReleveDeChambre)                    
 
             def TypeSupport( ColonneType , ColonneSupport ):
 
@@ -651,15 +629,8 @@ class OngletOrang :
                 return ChambreC3Blist
 
             # Initialisation des listes
-            supportListC3B      = []
-            supportListShape    = []
-            C3Blist             = []            
-            ChambreC3Blist      = []
-            InseeListC3B        = []          
-            nombreDeSupport     = 0
-            increment           = 0
-            nbrDeSupportDsShape= 0
-            faute               = 0
+            supportListC3B,supportListShape,C3Blist,ChambreC3Blist,InseeListC3B = [] , [] , [], [] ,[]  
+            nombreDeSupport ,  increment  , nbrDeSupportDsShape , faute         = 0 , 1 , 0 , 0
 
             try :
 
@@ -695,7 +666,6 @@ class OngletOrang :
                         # S'arrete sur le fichier support.dbf
                         elif "support.dbf" in File :                        
 
-                            # Affiche le Titre de la Fonction
                             dbfFile  = (directory+"/"+File) 
 
                             for record in DBF(dbfFile):
@@ -705,12 +675,14 @@ class OngletOrang :
                             LABELBORDEREAU( scrollable_frame , "black" , "Il y a " + str(nbrDeSupportDsShape) + " supports présent dans le shape" )
 
                             for record in DBF(dbfFile):
-                                increment +=1
+                                
                                 Value = str(record['id_support'])
                                 LABELRESULTAT( 9, "white", "normal", str( increment ).zfill(3) + " \t " + str( Value ) ) 
 
                                 # Tous les supports se trouvant dans le Shape
-                                supportListShape.append(Value)                
+                                supportListShape.append(Value)    
+
+                                increment +=1            
                         
                 # Affiche le Titre de la Fonction
                 C3Blist= list(dict.fromkeys(C3Blist)) # retire les doublons 
@@ -720,7 +692,7 @@ class OngletOrang :
 
                 # Affiche le nombre de calbes present dans la C3Bs
                 LABELBORDEREAU( scrollable_frame , "black" , "Il y a " + str(nombreDeSupport) + " supports présents dans la C3B" )
-
+                i = 1
                 for element in sorted(C3Blist) :
 
                     Newelement = element.split(" ")[2]
@@ -730,11 +702,14 @@ class OngletOrang :
                     supportListC3B.append(Newelement)
 
                     if element != "" :
+                        
                         if "Chambre" in element :
-                            LABELRESULTAT( 9, colorGreen, "bold", element )
+                            LABELRESULTAT( 9, colorGreen, "bold",str(i).zfill(3) + " - " + element )
+                            i+=1
                         else:
                             Actived( ButtonAppuiAerien  )
-                            LABELRESULTAT( 9, colorBlue , "bold", element )
+                            LABELRESULTAT( 9, colorBlue , "bold",str(i).zfill(3) + " - " + element )
+                            i+=1
 
                 if len(supportListShape) == 0 :
                     Titre = LABELBORDEREAU( scrollable_frame , colorRed , "Le fichier support.shp est manquant, vide ou zippé " )
@@ -743,46 +718,35 @@ class OngletOrang :
                     faute += 1
 
                 else :
-                    for element in sorted(supportListC3B) :
-                        # print ( "supportListC3B : " + str(element) )
-                        if element not in supportListShape :
-                            faute += 1
-                            if len(element) < 8 :
-                                LABELRESULTAT( 9, colorRed, "bold", "Support : " + element + u"\t\test présent dans la C3B mais absent de Support.shp" ) 
+                    
+                    def BoucleSurListe( color, liste, inverseListe, number, elementVar , information ) :
+                        for element in sorted(liste) :
+                            if element not in inverseListe :
+                                if len(element) < number :
+                                    LABELRESULTAT( 9, color, "bold", "Support : " + elementVar + information ) 
+                                else :
+                                    LABELRESULTAT( 9, color, "bold", "Support : " + element + information ) 
 
-                            else :
-                                LABELRESULTAT( 9, colorRed, "bold", "Support : " + element + u"\test présent dans la C3B mais absent de Support.shp" )         
+                    BoucleSurListe( colorRed, supportListC3B , supportListShape, 8 , element , u"\test présent dans la C3B mais absent de Support.shp"  )
+                    BoucleSurListe( colorOrang, supportListShape , supportListC3B, 1 , "vide" , "\tà supprimer du Shape" )
+                    faute += 1
 
-                    for element in sorted(supportListShape) :
-                        # print ( "supportListShape : " + str(element) )
-                        if element not in supportListC3B :
-                            faute += 1
-                            if element == "" :
-                                LABELRESULTAT( 9, colorOrang, "bold", u"Support : <vide> à supprimer du Shape" )
-                            else :
-                                LABELRESULTAT( 9, colorOrang, "bold", u"Support : " + element + " à supprimer du Shape" )  
-                # ------------------------------------------------------------------------------------------------------------------------------------
-                # ------------------------------------------------------------------------------------------------------------------------------------
                 InseeListC3B= list(dict.fromkeys(InseeListC3B)) # retire les doublons 
 
-                DictCommune = { "SAINT-BASLEMONT"   : 88411 , "THUILLIERES"      : 88472 , "SAINT-BASLEMONT" : 88411 , 
-                                "VALLEROY LE SEC"   : 88490 , "VITTEL"           : 88516 , "SANDAUCOURT"     : 88440 ,
-                                "DOMBROT-SUR-VAIR"  : 88141 , "BELMONT-SUR-VAIR" : 88051 , "NORROY"          : 88332 , 
-                                "MONTHUREUX-LE-SEC" : 88309 , "HAREVILLE"        : 88231 , "THEY-SOUS-MONTFORT" : 88466,
+                DictCommune = { "SAINT-BASLEMONT"   : 88411 , "THUILLIERES"      : 88472 , "SAINT-BASLEMONT"    : 88411 , 
+                                "VALLEROY LE SEC"   : 88490 , "VITTEL"           : 88516 , "SANDAUCOURT"        : 88440 ,
+                                "DOMBROT-SUR-VAIR"  : 88141 , "BELMONT-SUR-VAIR" : 88051 , "NORROY"             : 88332 , 
+                                "MONTHUREUX-LE-SEC" : 88309 , "HAREVILLE"        : 88231 , "THEY-SOUS-MONTFORT" : 88466 
                                 }
                
                 val_list = list(DictCommune.values())
 
                 for commune in InseeListC3B :
                     if int(commune) in val_list :
-                        #print( u"valeur Trouvée : " + str(commune) )
-                        LABELRESULTAT( 9, "pink1", "bold", u"Commune : " + str(commune) + " \tTrouvée")  
-
+                        LABELRESULTAT( 9, "pink1", "bold", u"Commune : " + str(commune) + " \tTrouvée") 
                     else :
-                        #print( u"valeur Inconnue : " + str(commune) )
                         LABELRESULTAT( 9, "orchid1", "bold", u"Commune : " + str(commune) + " \tInconnue")
-                # ------------------------------------------------------------------------------------------------------------------------------------
-                # ------------------------------------------------------------------------------------------------------------------------------------
+
                 JusteOuFaux(faute)              
                       
             except Exception as e:
@@ -874,7 +838,6 @@ class OngletOrang :
                     
                         # S'arrete sur le shape cable.dbf
                         elif "cable.dbf" in File :
-
                             inc += 1                                
                             dbfFile  = (directory+"/"+File) # Créer le Chemin vers le Shape
 
@@ -952,9 +915,7 @@ class OngletOrang :
                     finFile = File [len(File)-8:len (File) - int(interger) ]   # _C16
                 elif interger == 5 :
                     finFile = File [len(File)-9:len (File) - int(interger) ]   # _C16
-                #print ( "finFile : ",finFile )
-                
-                # S'arrete sur le fichier si cette fin n'e"st pas égale à "_C16"
+
                 if finFile != "_C16" :
                     try:
                         # Renomme la fin par _C16
@@ -966,7 +927,6 @@ class OngletOrang :
                             newdirectory = directory + "/" + File[:-int(interger)] + "_C16.xlsx"                            
                         else:
                             pass
-                        # print ( "newdirectory5 : " + newdirectory )
 
                         rename(olddirectory,newdirectory)
                         RenameCount += 1
