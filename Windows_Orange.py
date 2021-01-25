@@ -16,6 +16,8 @@ import pandas as pd
 import xlrd3 as xlrd
 import time
 import tkinter.font as tkfont
+import time
+import progressbar 
 
 import tkinter, win32api, win32con, pywintypes
 
@@ -85,7 +87,11 @@ class OngletOrang :
         def LABELRESULTAT( taille, couleur, epais, texte ):
             labetdirectory = Label( scrollable_frame, text=texte, anchor="w" )
             labetdirectory.pack(side = TOP, expand=1, fill=X)
-            labetdirectory.configure(font=("Helvetica", taille, epais), fg=couleur, bg=self.LeaveColor )   
+            labetdirectory.configure(font=("Helvetica", taille, epais), fg=couleur, bg=self.LeaveColor ) 
+
+        def TitreFonction(texte):
+            LABELRESULTAT( 9, "white", "normal", u"\n" )
+            LABELBORDEREAU( scrollable_frame , colorBlue , texte )  
 
         def FuncUpFile():  
             
@@ -148,8 +154,7 @@ class OngletOrang :
                 AlveolAccept.append( "C{}".format( n )  )
                 AlveolAccept.append( "D{}".format( n )  )
 
-            # print ( AlveolAccept ) 
-            LABELRESULTAT( 9, colorGreen , "normal", "\n" )          
+            TitreFonction( "Analyse de la Command dacces"  ) 
 
             # retrouve tous les chemin dossier et fichiers 
             for directory, dirnames, filenames  in walk(Racine):
@@ -180,119 +185,60 @@ class OngletOrang :
                             if NumB == "" :
                                 NumB = u"<vide>"
 
-                            """ teste
+                            listSupportA = [ "C","CT","A","AT","P" ]
+
                             listC  = ["C","IMB","F","P","PT","A","AT","" ]
                             listCT = ["P","A" ]
                             lsitA  = ["IMB","A", "AT","F","P","PT" ]
                             listAT = ["P","A" ]
                             listP  = ["F","P","PT" ]
-                            """
 
                             if len(NumA) < 9 :
                                 Value = "►\t" + "Ligne : " + str(rx+1).zfill(3) + "\t\t" + "Alveole: "+Alveol + "\t" + "Type A = "+TypeA + "\t" + NumA + "\t\t" + "Type B = "+ TypeB  + "\t" + NumB
-                            
                             else :
                                 Value = "►\t" + "Ligne : " + str(rx+1).zfill(3) + "\t\t" + "Alveole: "+Alveol + "\t" + "Type A = "+TypeA + "\t" + NumA + "\t" + "Type B = "+ TypeB  + "\t" + NumB
-
+              
                             if TypeA == "C"  :
-
                                 if str(Alveol) not in AlveolAccept :
                                     val = str( "►\t" + "Ligne : " + str(rx).zfill(3) + "\t\tAlveol Fausse: " + str( Alveol ) )
                                     LABELRESULTAT( 9, colorRed , "normal", val )
 
-                                if   TypeB == "C" :
-                                    LABELRESULTAT( 9, colorGreen , "normal",  Value )
-
-                                elif TypeB == "IMB" :
-                                    LABELRESULTAT( 9, colorGreen , "normal",  Value )
-
-                                elif TypeB == "F" :
-                                    LABELRESULTAT( 9, colorGreen , "normal",  Value )
-
-                                elif TypeB == "P" :
-                                    LABELRESULTAT( 9, colorGreen , "normal",  Value )                        
-                            
-                                elif TypeB == "PT" :
-                                    LABELRESULTAT( 9, colorGreen , "normal",  Value )
-
-                                elif TypeB == "A" :
-                                    LABELRESULTAT( 9, colorGreen , "normal",  Value )
-
-                                elif TypeB == "AT" :
-                                    LABELRESULTAT( 9, colorGreen , "normal",  Value )
-
-                                elif TypeB == "" :
-                                    LABELRESULTAT( 9, colorGreen , "normal",  Value )
-
-                                else :
+                                if TypeB not in listC :
                                     LABELRESULTAT( 9, colorRed , "normal", Value )
+                                else :
+                                    LABELRESULTAT( 9, colorGreen , "normal",  Value )
 
                             elif TypeA == "CT"  :
-                                if   TypeB == "P" :
-                                    LABELRESULTAT( 9, colorGreen , "normal",  Value )
-                                
-                                elif   TypeB == "A" :
-                                    LABELRESULTAT( 9, colorGreen , "normal",  Value )
-
+                                if TypeB not in  listCT :
+                                    LABELRESULTAT( 9, colorRed , "normal",  Value )
                                 else :
-                                    LABELRESULTAT( 9, colorRed , "normal", Value )
+                                    LABELRESULTAT( 9, colorGreen , "normal", Value )
 
                             elif TypeA == "A"  :
-                                if   TypeB == "IMB" :
-                                    LABELRESULTAT( 9, colorGreen , "normal",  Value )
-
-                                elif   TypeB == "A" :
-                                    LABELRESULTAT( 9, colorGreen , "normal",  Value )
-
-                                elif   TypeB == "AT" :
-                                    LABELRESULTAT( 9, colorGreen , "normal",  Value )
-
-                                elif   TypeB == "F" :
-                                    LABELRESULTAT( 9, colorGreen , "normal",  Value )
-
-                                elif   TypeB == "P" :
-                                    LABELRESULTAT( 9, colorGreen , "normal",  Value )
-
-                                elif   TypeB == "PT" :
-                                    LABELRESULTAT( 9, colorGreen , "normal",  Value )
-
+                                if TypeB not in  lsitA :
+                                    LABELRESULTAT( 9, colorRed , "normal",  Value )
                                 else :
-                                    LABELRESULTAT( 9, colorRed , "normal", Value )
+                                    LABELRESULTAT( 9, colorGreen , "normal", Value )
 
                             elif TypeA == "AT"  :
-                                if   TypeB == "P" :
-                                    LABELRESULTAT( 9, colorGreen , "normal",  Value )
-
-                                elif TypeB == "A" :
-                                    LABELRESULTAT( 9, colorOrang , "normal", "\n" + Value + u"\n  Toléré, cependant : Type A = A  et  Type B = AT serait plus juste ► inverser les 2 supports si C3A impossible en C3B\n")
-
+                                if TypeB not in  listAT :
+                                    LABELRESULTAT( 9, colorRed , "normal",  Value )
                                 else :
-                                    LABELRESULTAT( 9, colorRed , "normal", Value )
+                                    LABELRESULTAT( 9, colorGreen , "normal", Value )
 
                             elif TypeA == "P"  :
-                                if   TypeB == "F" :
-                                    LABELRESULTAT( 9, colorGreen , "normal",  Value )
-
-                                elif   TypeB == "P" :
-                                    LABELRESULTAT( 9, colorGreen , "normal",  Value )
-
-                                elif   TypeB == "PT" :
-                                    LABELRESULTAT( 9, colorGreen , "normal",  Value )
-
+                                if TypeB not in  listP :
+                                    LABELRESULTAT( 9, colorRed , "normal",  Value )
                                 else :
-                                    LABELRESULTAT( 9, colorRed , "normal", Value )
+                                    LABELRESULTAT( 9, colorGreen , "normal", Value )
                             
                             else :
-                                LABELRESULTAT( 9, colorGreen , "normal",  Value )
+                                LABELRESULTAT( 9, colorOrang , "normal",  Value )
        
         # Fonction qui analyse le dossier Appui Aérien ----------------------------------------------------------------------------------------
-        def CheckAppuiAerien(): 
+        def CheckAppuiAerien():
 
-            # espace
-            LABELRESULTAT( 9, "white", "normal", u"\n" )   
-
-            # Affiche le nombre de calbes present dans la C3B
-            LABELBORDEREAU( scrollable_frame , colorBlue , "Analyse du dossier Appui Aérien"  )
+            TitreFonction( "Analyse du dossier Appui Aérien"  )  
 
             global C3Blist 
             C6List , PoteauxFauxList = [] , []
@@ -337,9 +283,9 @@ class OngletOrang :
                     resultat = SecondSepared.split("/")
 
                     if resultat[1] not in C6List : 
-                        LABELRESULTAT( 9, colorRed , "bold", u"►\t" + str(firstSepared) + " " + str(SecondSepared) + u"\test présent dans la C3B mais absent de la C6" )
+                        LABELRESULTAT( 9, colorRed , "normal", u"►\t" + str(firstSepared) + " " + str(SecondSepared) + u"\test présent dans la C3B mais absent de la C6" )
                     else :
-                        LABELRESULTAT( 9, colorBlue , "bold", u"►\t" + str(firstSepared) + " " + str(SecondSepared) + u"\t Ok" )
+                        LABELRESULTAT( 9, colorBlue , "normal", u"►\t" + str(firstSepared) + " " + str(SecondSepared) + u"\t Ok" )
 
                 elif "GESPOT" in File :         
                     listGespot.append( File[7:-5] )
@@ -399,6 +345,7 @@ class OngletOrang :
 
             global mylistFOA
             global C3Blist
+            mylistFOA , addNexList , addC3BChambreList , NewElementFOA = [] , [] , [] , []
 
             # ----------------------------------------------------------------------------------------------------
             def ResultatValidation( color , varText , texte ) :
@@ -414,9 +361,7 @@ class OngletOrang :
                     LABELRESULTAT( 9, colorRed, varText , File + str("\t◄ Manque _C16 à la fin") )
                     Actived(ButtonRenameC16)
             # ----------------------------------------------------------------------------------------------------
-
-            mylistFOA , addNexList , addC3BChambreList , NewElementFOA = [] , [] , [] , []
-
+           
             for element in  C3Blist:
                 addNexList.append( element.split(" ")[2] ) # Renvoie > 88516/152
 
@@ -426,11 +371,8 @@ class OngletOrang :
                 # S'arrete sur le dossier "Relevé de chambre"
                 if path.basename(directory) == u"Relevé de chambre" :
 
-                    # Affiche le nombre de calbes present dans la C3B
-                    LABELBORDEREAU( scrollable_frame , self.OnColor , u""  )
-                    LABELBORDEREAU( scrollable_frame , colorBlue , u"Analyse du dossier Relevé de Chambres"  )
+                    TitreFonction( u"Analyse du dossier Relevé de Chambres"   )  
 
-                    # Affiche le nombre de fichier FOA dans ce dossier
                     LABELBORDEREAU( scrollable_frame , "black" , " ( il y a "+ str(len(filenames )) + " fichiers FOA )"  )
 
                     # Boucle sur la liste du DBF pour sortir chaque Element #
@@ -438,17 +380,15 @@ class OngletOrang :
 
                         Newfilenames  = File[:len(File)-9].replace("-", "/")
 
-                        if File[len(File)-4:] == ".xls": 
-                            #print ( "xls : " + File[len(File)-8:-4] )
-                            mylistFOA.append( File[:len(File)-8] )
-
+                        if File[len(File)-4:] == ".xls":            
                             if File[len(File)-8:-4] == "_C16" :
                                 LABELRESULTAT( 9, "white", "normal", File ) 
                             else:
                                 LABELRESULTAT( 9, colorRed, "bold", File + str(" ◄ Manque _C16 à la fin") )
+                            mylistFOA.append( File[:len(File)-8] )
 
                         elif File[len(File)-4:] == "xlsx":
-                            if Newfilenames  in addNexList :
+                            if Newfilenames in addNexList :
                                 ResultatValidation( colorGreen , "bold" , str("\t\t◄ Nécessaire donc OK") )
                             else :
                                 ResultatValidation( colorGray , "normal" ,  str("\t\t◄ Pas Nécessaire à Retirer du dossier \"Relevé de Chambre\"") ) 
@@ -465,16 +405,13 @@ class OngletOrang :
             # retire les doublons
             NewElementFOA     = list(dict.fromkeys(NewElementFOA))       
             addC3BChambreList = list(dict.fromkeys(addC3BChambreList))
-            i=0
 
             dirname = path.dirname( path.abspath(__file__))
             file    = path.join( dirname, 'RapportFoaManquant.txt' )
             my_file = open( file ,'w+' )
 
-            for element in sorted(addC3BChambreList)   :
-
+            for element in sorted(addC3BChambreList) :
                 if element not in NewElementFOA :
-                    i+=1
                     # print ( "manquant : " + str(element) )
                     LABELRESULTAT( 9, colorRed, "bold", "Le fichier FOA ( " + element + str(" )\t est manquant dans le dossier \"Relevé de Chambre\"") )                    
                     my_file.write( element + "\r")
@@ -501,24 +438,13 @@ class OngletOrang :
                         supportC3Blist.append(  support + " \t " + Boitier )
                         C3Blist.append( support + " \t " + Boitier )
 
-                return nombreDeBPE , C3Blist , supportC3Blist
+                return C3Blist , supportC3Blist
 
-            # espace
-            LABELRESULTAT( 9, "gray99", "bold", u"\n" ) 
-
-            # Affiche le nombre de calbes present dans la C3B
-            LABELBORDEREAU( scrollable_frame , colorBlue , "Analyse du nombres de boitiers"  )
+            TitreFonction( u"Analyse du nombres de boitiers"   ) 
                       
-            # retrouve tous les chemin dossier et fichiers 
-            for directory, dirnames, filenames  in walk(Racine):
-
-                # Sort les fichies de la liste de fichier                
+            for directory, dirnames, filenames  in walk(Racine):          
                 for File in sorted(filenames ) : 
-
-                    # S'arrete sur le fichier Fxxxxxxxxxxx_C3B.xlsx
                     if "C3B" in File :
-
-                        # Monte le fichier Fxxxxxxxxxxx_C3B.xlsx      
                         sh = RecupExcelPatch( directory , File, "C3B" )
 
                         # Boucle sur toutes les lignes du fichier pour récupérer les informations                        
@@ -529,8 +455,8 @@ class OngletOrang :
                             
                             if Boitier != "" :
 
-                                nombreDeBPE, C3Blist, supportC3Blist = supportAvecBoitier( 3, "A" )
-                                nombreDeBPE, C3Blist, supportC3Blist = supportAvecBoitier( 5, "B" )
+                                C3Blist, supportC3Blist = supportAvecBoitier( 3, "A" )
+                                C3Blist, supportC3Blist = supportAvecBoitier( 5, "B" )
 
                     # S'arrete sur le fichier support.dbf
                     elif "bpe.dbf" in File :
@@ -546,53 +472,52 @@ class OngletOrang :
                                 if Value != '' :
                                     # Tous les supports se trouvant dans le Shape
                                     supportListShape.append(Value)            
-
+            nombreDeBPE = 0
             # Affiche le nombre de calbes present dans la C3B
             LABELBORDEREAU( scrollable_frame , "black" , "Il y a " + str(nombreDeBPE) + " supports ayant un boitier dans la C3B"  )
+            
+            def verifPresent( listA , listB , information , firstValue , SecondValue ):
 
-            def RetourC3B( SecondNbr, LongText, texte):
-                firstSepared  = Element.split(' ')[0]
-                SecondSepared = Element.split(' ')[SecondNbr]
+                def RetourC3B( SecondNbr, LongText, texte):
+                    firstSepared  = Element.split(' ')[0]
+                    SecondSepared = Element.split(' ')[SecondNbr]
+                    NewSupportC3Blist.append(firstSepared)
 
-                NewSupportC3Blist.append(firstSepared)
+                    if len(firstSepared) < LongText :
+                        LABELRESULTAT( 9, colorGreen, "bold", str( i ).zfill(3) + texte +  "\t\t" + firstSepared + "\t\t" + SecondSepared  ) 
+                    else:
+                        LABELRESULTAT( 9, colorGreen, "bold", str( i ).zfill(3) + texte +  "\t\t" + firstSepared + "\t" + SecondSepared )
 
-                if len(firstSepared) < LongText :
-                    LABELRESULTAT( 9, colorGreen, "bold", texte +  "\t\t" + firstSepared + "\t\t" + SecondSepared  ) 
-                else:
-                    LABELRESULTAT( 9, colorGreen, "bold", texte +  "\t\t" + firstSepared + "\t" + SecondSepared )
+                i=1
+                for Element in sorted(listA) :                    
+                    if Element not in listB :
+                        RetourC3B( firstValue, SecondValue , information )
+                        i+=1
 
-            for Element in sorted(C3Blist) :
-                if Element != "" :
-                    RetourC3B(3, 9 , "Present dans la C3B :" )
-
-            for Element in sorted(supportC3Blist) :            
-                if Element not in C3Blist :
-                    RetourC3B(1, 8 , "Absent de la C3B :" )
+            emptyList = [""]
+            verifPresent( C3Blist , emptyList , " - Present dans la C3B :" , 3 , 9 )
+            verifPresent( supportC3Blist , C3Blist , " - Absent de la C3B :" , 1 , 8 )
 
             LABELRESULTAT( 9, colorGreen, "bold", "" ) 
             LABELBORDEREAU( scrollable_frame , "black" , "Il y a " + str(len(supportListShape) ) + " supports ayant un boitier dans le Shape"  )
 
-            i,j=0,0
-            for Element in supportC3Blist :
-
+            i,j=1,1
+            for Element in sorted(supportC3Blist) :
                 firstSepared  = Element.split(' ')[0]
                 NewSupportC3Blist.append(firstSepared)
+                if firstSepared in supportListShape :                    
+                    LABELRESULTAT( 9, colorGreen, "bold", str( i ).zfill(3) + " - Present dans bpe.shape : \t" + firstSepared ) 
+                    i+=1          
+                else :                    
+                    LABELRESULTAT( 9, colorRed, "bold", str( j ).zfill(3) +" - Absent dans bpe.shape : \t" + firstSepared )
+                    j+=1 
 
-                if firstSepared in supportListShape :
-                    i+=1
-                    LABELRESULTAT( 9, colorGreen, "bold", str( i ).zfill(3) +" - Present dans bpe.shape : \t\t" + firstSepared )           
-                else :
-                    j+=1
-                    LABELRESULTAT( 9, colorRed, "bold", str( j ).zfill(3) +" - Absent dans bpe.shape : \t\t" + firstSepared ) 
-
-            i=0
-            for Element in supportListShape :
+            i=1
+            for Element in sorted(supportListShape) :
                 if Element not in NewSupportC3Blist and  Element != '' :
+                    LABELRESULTAT( 9, colorOrang, "bold", str( i ).zfill(3) + " - En trop dans bpe.shape : \t" + Element )
                     i+=1
-                    print ("element trouvée en trop : " + firstSepared)
-                    LABELRESULTAT( 9, colorOrang, "bold", str( i ).zfill(3) + " - En trop dans bpe.shape : \t\t" + Element )
-
-            JusteOuFaux(j) 
+            JusteOuFaux(j-1) 
 
         # Fonction qui analyse et compare le shape BPE par rapport à la C3B -------------------------------------------------------------
         
@@ -606,39 +531,29 @@ class OngletOrang :
 
             def TypeSupport( ColonneType , ColonneSupport ):
 
-                Type = str( sh.cell( rowx=rx, colx=ColonneType ).value)
+                Type  = str( sh.cell( rowx=rx, colx=ColonneType ).value)  
+                Cable = str( sh.cell(rowx=rx, colx=15).value)                        
+                if Cable != u"Câble non posé" and Type != "F" and Type != "AT" : 
 
-                if Type == "C" :
-                    Type = "Chambre"
-                if Type == "A" :
-                    Type = "Poteau"
+                    Support = str( sh.cell(rowx=rx, colx=ColonneSupport).value)
 
-                CABLE   = str( sh.cell(rowx=rx, colx=15).value)
-
-                if CABLE != u"Câble non posé" :                    
-                            
-                    if Type != "F" and Type != "AT" :                                
-
-                        SUP1ORT = str( sh.cell(rowx=rx, colx=ColonneSupport).value)
-                        C3Blist.append( Type + " - " + SUP1ORT )
-
-                        if Type != "A" and Type != "A" :
-
-                            ChambreC3Blist.append( Type + " - " + SUP1ORT )
+                    if Type == "C" :
+                        Type = "Chambre"
+                        ChambreC3Blist.append( Type + " - " + Support )
+                    if Type == "A" :
+                        Type = "Poteau"    
+                    
+                    C3Blist.append( Type + " - " + Support )
 
                 return ChambreC3Blist
 
             # Initialisation des listes
             supportListC3B,supportListShape,C3Blist,ChambreC3Blist,InseeListC3B = [] , [] , [], [] ,[]  
-            nombreDeSupport ,  increment  , nbrDeSupportDsShape , faute         = 0 , 1 , 0 , 0
+            nombreDeSupport , increment , nbrDeSupportDsShape , faute = 0 , 1 , 0 , 0
 
             try :
 
-                # espace
-                LABELRESULTAT( 9, "white", "normal", u"\n" )   
-
-                # Affiche le nombre de calbes present dans la C3B
-                LABELBORDEREAU( scrollable_frame , colorBlue , u"Analyse des Supports"  )
+                TitreFonction( u"Analyse des Supports" ) 
 
                 # Retrouve tous les chemins , les dossiers et les fichiers de Racine
                 for directory, dirnames, filenames  in walk(Racine):
@@ -651,13 +566,9 @@ class OngletOrang :
                         nbrDeSupportDsShape= 0                      
 
                         # S'arrete sur le fichier Fxxxxxxxxxxx_C3B.xlsx
-                        if "C3B" in File or "C3A" in File:                    
+                        if "C3B" in File:   
 
-                            # Monte le fichier Fxxxxxxxxxxx_C3B.xlsx
-                            try :     
-                                sh = RecupExcelPatch( directory , File, "C3A" )
-                            except:
-                                sh = RecupExcelPatch( directory , File, "C3B" )                                 
+                            sh = RecupExcelPatch( directory , File, "C3B" )                                 
 
                             for rx in range(11,sh.nrows):
                                 TypeSupport( 2 , 3 )
@@ -693,6 +604,10 @@ class OngletOrang :
                 # Affiche le nombre de calbes present dans la C3Bs
                 LABELBORDEREAU( scrollable_frame , "black" , "Il y a " + str(nombreDeSupport) + " supports présents dans la C3B" )
                 i = 1
+                dirname = path.dirname( path.abspath(__file__))
+                file    = path.join( dirname, 'RapportFoaManquant.txt' )
+                print ( file )
+                my_file = open( file ,'w+' )
                 for element in sorted(C3Blist) :
 
                     Newelement = element.split(" ")[2]
@@ -704,12 +619,16 @@ class OngletOrang :
                     if element != "" :
                         
                         if "Chambre" in element :
-                            LABELRESULTAT( 9, colorGreen, "bold",str(i).zfill(3) + " - " + element )
+                            LABELRESULTAT( 9, colorGreen, "normal", str(i).zfill(3) + " - " + element )
+                            Newfilenames  = Newelement.replace("/", "-")
+                            my_file.write( Newfilenames + "\r")
                             i+=1
                         else:
                             Actived( ButtonAppuiAerien  )
-                            LABELRESULTAT( 9, colorBlue , "bold",str(i).zfill(3) + " - " + element )
+                            LABELRESULTAT( 9, colorBlue , "normal", str(i).zfill(3) + " - " + element )
                             i+=1
+
+                my_file.close() 
 
                 if len(supportListShape) == 0 :
                     Titre = LABELBORDEREAU( scrollable_frame , colorRed , "Le fichier support.shp est manquant, vide ou zippé " )
@@ -717,8 +636,7 @@ class OngletOrang :
                     LABELRESULTAT( 9, colorGreen, "normal", "" )
                     faute += 1
 
-                else :
-                    
+                else :                    
                     def BoucleSurListe( color, liste, inverseListe, number, elementVar , information ) :
                         for element in sorted(liste) :
                             if element not in inverseListe :
@@ -727,8 +645,8 @@ class OngletOrang :
                                 else :
                                     LABELRESULTAT( 9, color, "bold", "Support : " + element + information ) 
 
-                    BoucleSurListe( colorRed, supportListC3B , supportListShape, 8 , element , u"\test présent dans la C3B mais absent de Support.shp"  )
-                    BoucleSurListe( colorOrang, supportListShape , supportListC3B, 1 , "vide" , "\tà supprimer du Shape" )
+                    BoucleSurListe( colorRed    , supportListC3B    , supportListShape  , 8 , element , u"\test présent dans la C3B mais absent de Support.shp"  )
+                    BoucleSurListe( colorOrang  , supportListShape  , supportListC3B    , 1 , "vide" , "\tà supprimer du Shape" )
                     faute += 1
 
                 InseeListC3B= list(dict.fromkeys(InseeListC3B)) # retire les doublons 
@@ -793,24 +711,15 @@ class OngletOrang :
                 return idValue, idDiam
 
             # Initialisation des Listes
-            C3Blist         = []
-            DBFlist         = []
-            nombreDeCable   = 0
-            inc             = 0
+            C3Blist ,DBFlist = [] , []
+            nombreDeCable , inc = 0 , 0
 
-            # Affiche le nombre de calbes present dans la C3B
-            LABELBORDEREAU( scrollable_frame , colorBlue , u"Analyse des Câbles"  )
+            TitreFonction( u"Analyse des Câbles"  ) 
            
-            # retrouve tous les chemin dossier et fichiers 
             for directory, dirnames, filenames  in walk(Racine):
-
-                # Sort les fichies de la liste de fichier
                 for File in sorted(filenames ) :
-
                     try :
                         if "C3B" in File :
-
-                            # Monte le fichier Fxxxxxxxxxxx_C3B.xlsx
                             sh = RecupExcelPatch( directory , File , "C3B")  
 
                             # Boucle sur toutes les lignes du fichier pour récupérer les informations                        
@@ -827,13 +736,12 @@ class OngletOrang :
                                     SUP2ORT = ReconnaissanceSupport(5)                                        
 
                                     # S'arrete sur la Colonne K : Diamètre du Câble à Poser
-                                    DIAM    = str( sh.cell(rowx=rx, colx=10).value)
+                                    DiametreCable    = str( sh.cell(rowx=rx, colx=10).value)
 
                                     # Réunie Chaques Valeurs
-                                    Value = SUP1ORT +"-"+ SUP2ORT +"-"+ DIAM
+                                    Value = SUP1ORT +"-"+ SUP2ORT +"-"+ DiametreCable
                                     C3Blist.append( Value )  
-
-                                    # Nombre de Câble                                        
+                                     
                                     nombreDeCable += 1  
                     
                         # S'arrete sur le shape cable.dbf
@@ -842,12 +750,9 @@ class OngletOrang :
                             dbfFile  = (directory+"/"+File) # Créer le Chemin vers le Shape
 
                             # Boucle sur chaque ligne du fichier
-                            for record in DBF(dbfFile):
-
+                            for record in DBF(dbfFile) :                                
                                 IDAValue, IDiamValue = RecupereSupport('id_a' , 'type_a' )
                                 IDBValue, IDiamValue = RecupereSupport('id_b' , 'type_b' )
-
-                                # Réunie Chaques Valeurs
                                 Value = IDAValue + "-" + IDBValue + "-" + IDiamValue
                                 DBFlist.append( Value )
 
@@ -869,8 +774,6 @@ class OngletOrang :
             
             # Affiche le nombre de calbes present dans la C3B
             LABELBORDEREAU( scrollable_frame , "black" , "Il y a " + str(nombreDeCable) + " câbles posées dans la C3B" )            
-
-            # Entete
             LABELRESULTAT( 10, "white", "bold", u"\t\t\t\t id_a \t\t   id_b\t\tdiam_cbl" ) 
             
             i=1 
@@ -882,22 +785,21 @@ class OngletOrang :
                     i+=1
 
             # Début de l'analyse du Shape
-            for Element in sorted(DBFlist) :   
-                
+            for Element in sorted(DBFlist) :  
                 if Element not in C3Blist :
-                    # Dectecte les Câbles en trop dans le Shape :
                     TextJustify(colorOrang , u"Câble à supprimer du Shape : ", 
                     "\t" , "\t\t", "\t" , "\t" , "\t\t", "\t\t", "\t" , "\t", "\t\t" , "\t" , "\t"  ) 
                 else : 
-                    # Dectecte les Câbles justes ► présent dans le Shape et present dans la C3B :
                     TextJustify(colorGreen , u"\tCâble à Garder : ",
                     "\t\t" , "\t\t", "\t\t" , "\t\t" , "\t\t", "\t", "\t\t" , "\t", "\t\t" , "\t\t" , "\t" ) 
 
-            # Dectecte les Câbles manquants dans le Shape :
+
             for Element in sorted(C3Blist) :
                 if Element not in DBFlist : 
                     TextJustify(colorRed , u"Câble à ajouter sur le Shape : ", 
-                    "\t" , "\t\t", "\t" , "\t" , "\t\t", "\t\t", "\t" , "\t", "\t\t" , "\t" , "\t" )  
+                    "\t" , "\t\t", "\t" , "\t" , "\t\t", "\t\t", "\t" , "\t", "\t\t" , "\t" , "\t" )
+                else:
+                    pass
 
             if len(DBFlist) == 0 :
                 Titre = LABELBORDEREAU( scrollable_frame , colorRed , "Le fichier cable.shp est manquant ou vide" )
@@ -978,7 +880,7 @@ class OngletOrang :
         canvas.bind_all("<MouseWheel>", _on_mousewheel)        
 
         # Définition des la Police d'écriture  
-        helvetica = tkfont.Font(family='Arcade', size=17, weight='bold')
+        helvetica = tkfont.Font(family='Verdana', size=10, weight='bold')
 
         # Creation du scrollbar
         scrollbar        = Scrollbar(container, orient="vertical", command=canvas.yview)
@@ -991,14 +893,24 @@ class OngletOrang :
 
         container.pack(               fill="both" , expand=True )
         canvas   .pack( side="left" , fill="both" , expand=True )          
-        scrollbar.pack( side="right", fill="y"                  )   
+        scrollbar.pack( side="right", fill="y"                  ) 
+
+        """        
+        widgets = ['Loading: ', progressbar.AnimatedMarker()] 
+        bar = progressbar.ProgressBar(widgets=widgets).start() 
+        
+        for i in range(50): 
+            time.sleep(0.1) 
+            bar.update(i) 
+        """
+
 
         def CreationDeBouton(): 
 
             FrameShape   = Frame( self.left_frame, bg=self.LeaveColor )
             FrameShape.place(   relx=0, rely=1, anchor=SW, relwidth=1, relheight=0.75 )
 
-            listButtonTitre  = [ u"C3B C3A"     , u"Support\n.shp"   , u"Cable\n.shp"   , u"Bpe.shp"   , u"Releve de\nChambre"   , u"Rename\nC16"  , u"Appui\nAerien" ]
+            listButtonTitre  = [ u"\tC3B C3A"     , u"\tSupport.shp"   , u"\tCable.shp"   , u"\tBpe.shp"   , u"\tReleve de\n\tChambre"   , u"\tRename C16"  , u"\tAppui Aerien" ]
             listCommandShape = [ CheckC3bXlsx        , CheckSupportShp     , CheckCableShp     , CheckBpeShp     , CheckReleveChambre       , CheckRenameC16     , CheckAppuiAerien     ]
             listButtonName   = [ u'ButtonAnalyseC3B' , u'ButtonSupportShp' , u'ButtonCableShp' , u'ButtonBpeShp' , u'ButtonReleveDeChambre' , u'ButtonRenameC16' , u'ButtonAppuiAerien' ]
 
@@ -1006,23 +918,23 @@ class OngletOrang :
                         ,"./logo/Button4K-MenuBoitier.png","./logo/Button4K-MenuReleve.png"
                         ,"./logo/Button4K-MenuRename.png","./logo/Button4K-MenuSupport.png" ] 
 
-            decalage = .05
-
+            decalage   = .05
             self.icons = []
 
             i=0
             for pathIcon in icons :
 
                 image = Image.open( pathIcon )
-                image = image.resize((60,60), Image.ANTIALIAS)
-                icon  = ImageTk.PhotoImage( image )                
-                              
-                Label( FrameShape, image=icon, bg=self.LeaveColor ).place(relx = 0.05, rely = i/7+decalage, anchor = W)
-                self.icons.append( icon )                 
+                image = image.resize((45,45), Image.ANTIALIAS)
+                icon  = ImageTk.PhotoImage( image )    
 
-                listButtonName[i] = Button(FrameShape, bg=self.LeaveColor , highlightthickness=0, cursor="hand2", fg="cyan"
-                    , relief=FLAT, activebackground=self.LeaveColor, command=listCommandShape[i], state=DISABLED, font=helvetica,text=listButtonTitre[i] )
-                listButtonName[i].place(relx = 16/40, rely = i/7+decalage, anchor = W, relwidth= 0.6, relheight = 0.10 ) 
+                listButtonName[i] = Button(FrameShape,bd=1, bg=self.LeaveColor , highlightthickness=4, cursor="hand2", fg="cyan"
+                    , relief=SOLID , activebackground="cyan" , command=listCommandShape[i], state=DISABLED
+                    , font=helvetica,text=listButtonTitre[i] , highlightcolor="pink", highlightbackground="#37d3ff" )
+                listButtonName[i].place(relx = 0, rely = i/11+decalage, anchor = W, relwidth= 1, relheight = 0.10 ) 
+
+                Label( FrameShape, image=icon, bg=self.LeaveColor ).place(relx = 0.05, rely = i/11+decalage, anchor = W)
+                self.icons.append( icon )  
 
                 i+=1 
 
