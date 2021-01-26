@@ -1,0 +1,8 @@
+colorRed    = "salmon"
+colorGreen  = "SeaGreen3"
+colorBlue   = "cornflower blue"
+colorOrange = "tan1"
+colorGray   = "gray63"
+leaveColor  = "gray9" 
+OnColor     = "gray6" 
+colorFont   = "white"
